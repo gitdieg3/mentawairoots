@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { useGlobal } from '../GlobalContext'; // <-- 1. IMPORT JANTUNGNYA
 
 const Detail = () => {
     const navigate = useNavigate();
-    // Tangkap ID dari URL (contoh: /detail?id=12)
     const [searchParams] = useSearchParams();
     const packageId = searchParams.get('id');
+
+    // <-- 2. TARIK TOOLS TOAST DARI JANTUNG
+    const { showToast } = useGlobal(); 
 
     // STATE UNTUK DATA SUPABASE
     const [packageData, setPackageData] = useState(null);
@@ -19,9 +22,7 @@ const Detail = () => {
     const [pax, setPax] = useState(1);
     const [date, setDate] = useState('');
 
-    // EFEK SAAT HALAMAN DIBUKA: TARIK DATA DARI DATABASE
     useEffect(() => {
-        // Kalau nggak ada ID di URL, usir balik ke Home
         if (!packageId) {
             navigate('/');
             return;
@@ -29,18 +30,16 @@ const Detail = () => {
 
         const fetchDetailData = async () => {
             try {
-                // 1. Tarik Data Utama Paket
                 const { data: pkg, error: pkgError } = await supabase
                     .from('paket_wisata')
                     .select('*')
                     .eq('id_paket', packageId)
-                    .single(); // Ambil 1 data aja
+                    .single(); 
                 
                 if (pkgError) throw pkgError;
                 setPackageData(pkg);
-                setMainImage(pkg.gambar); // Set gambar utama
+                setMainImage(pkg.gambar); 
 
-                // 2. Tarik Data Itinerary
                 const { data: itin } = await supabase
                     .from('itinerary')
                     .select('*')
@@ -48,7 +47,6 @@ const Detail = () => {
                     .order('hari_ke', { ascending: true });
                 setItineraries(itin || []);
 
-                // 3. Tarik Data Galeri Tambahan
                 const { data: gal } = await supabase
                     .from('galeri_paket')
                     .select('*')
@@ -57,7 +55,9 @@ const Detail = () => {
 
             } catch (error) {
                 console.error("Error fetching detail:", error.message);
-                alert("Gagal memuat detail paket atau paket tidak ditemukan.");
+                
+                // <-- 3. GANTI ALERT JADI TOAST ELEGAN
+                showToast("Gagal memuat detail paket atau paket tidak ditemukan.", "error"); 
                 navigate('/');
             } finally {
                 setLoading(false);
@@ -66,21 +66,17 @@ const Detail = () => {
 
         fetchDetailData();
 
-        // Set default tanggal ke hari esok
         const today = new Date();
         const tomorrow = new Date(today);
         tomorrow.setDate(tomorrow.getDate() + 1);
         setDate(tomorrow.toISOString().split('T')[0]);
-    }, [packageId, navigate]);
+    }, [packageId, navigate, showToast]);
 
-    // FUNGSI SUBMIT FORM KE HALAMAN BOOKING
     const handleBookingSubmit = (e) => {
         e.preventDefault();
-        // Bawa ID paket, tanggal, dan pax ke halaman Booking
         navigate(`/booking?id=${packageId}&date=${date}&pax=${pax}`);
     };
 
-    // TAMPILAN JIKA DATA MASIH LOADING
     if (loading) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
@@ -92,8 +88,6 @@ const Detail = () => {
         );
     }
 
-    // PISAHKAN FASILITAS INCLUDE / EXCLUDE (Dari teks panjang menjadi list array)
-    // Asumsinya di Admin Panel, fasilitas dipisah pakai baris baru (enter/newline)
     const renderFasilitas = (text) => {
         if (!text) return <p className="text-sm text-gray-500 italic">Tidak ada data.</p>;
         const items = text.split('\n').filter(item => item.trim() !== '');
@@ -121,7 +115,7 @@ const Detail = () => {
                     <i className="fa-solid fa-arrow-left"></i> Kembali ke Katalog
                 </a>
 
-                {/* HEADER PAKET DINAMIS */}
+                {/* HEADER PAKET */}
                 <div className="mb-10">
                     <div className="flex flex-wrap gap-2.5 mb-4">
                         <span className="bg-mentawaiDark text-mentawaiMint border border-white/10 px-3.5 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest shadow-sm flex items-center gap-1.5">
@@ -137,10 +131,7 @@ const Detail = () => {
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-12">
-                    {/* KOLOM KIRI (KONTEN UTAMA) */}
                     <div className="lg:w-2/3">
-                        
-                        {/* GALERI INTERAKTIF DINAMIS */}
                         <div className="mb-12">
                             <div className="relative overflow-hidden rounded-3xl shadow-lg border border-mentawaiDark/5 mb-4 aspect-[16/10]">
                                 <img src={mainImage} className="w-full h-full object-cover transition duration-500" alt="Main Expedition" />
@@ -148,14 +139,12 @@ const Detail = () => {
                             </div>
                             
                             <div className="flex gap-4 overflow-x-auto snap-x pb-3 custom-scrollbar">
-                                {/* Thumbnail Gambar Utama */}
                                 <img 
                                     src={packageData.gambar} 
                                     className={`gallery-thumb w-28 h-20 object-cover rounded-2xl snap-start shadow-sm border-2 transition duration-300 cursor-pointer ${mainImage === packageData.gambar ? 'border-mentawaiMint opacity-100' : 'border-transparent opacity-70 hover:opacity-100 hover:border-mentawaiSage'}`} 
                                     onClick={() => setMainImage(packageData.gambar)} 
                                     alt="Thumbnail Utama" 
                                 />
-                                {/* Thumbnail dari Galeri (Jika Ada) */}
                                 {galleries.map((gal) => (
                                     <img 
                                         key={gal.id_galeri}
@@ -168,16 +157,13 @@ const Detail = () => {
                             </div>
                         </div>
 
-                        {/* DESKRIPSI TRIP OVERVIEW DINAMIS */}
                         <div className="mb-12 bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-mentawaiDark/5">
                             <h2 className="text-2xl font-serif font-bold text-mentawaiDark mb-5 border-b border-mentawaiDark/5 pb-3">Trip Overview</h2>
                             <div className="text-gray-600 font-light leading-relaxed text-sm md:text-base whitespace-pre-wrap">
-                                {/* Gunakan whitespace-pre-wrap agar 'enter/newline' dari database terbaca */}
                                 {packageData.deskripsi_lengkap}
                             </div>
                         </div>
 
-                        {/* INCLUDE / EXCLUDE DINAMIS */}
                         <div className="mb-12 grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="bg-[#103D2E]/5 p-8 rounded-3xl border border-[#103D2E]/10">
                                 <h3 className="text-sm font-bold text-mentawaiDark mb-5 uppercase tracking-wider flex items-center gap-3">
@@ -198,7 +184,6 @@ const Detail = () => {
                             </div>
                         </div>
 
-                        {/* TOUR ITINERARY DINAMIS */}
                         <div className="mb-12 bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-mentawaiDark/5">
                             <h2 className="text-2xl font-serif font-bold text-mentawaiDark mb-8 border-b border-mentawaiDark/5 pb-3">Detail Itinerary</h2>
                             
@@ -225,7 +210,6 @@ const Detail = () => {
                         </div>
                     </div>
 
-                    {/* KOLOM KANAN (STICKY BOOKING WIDGET) */}
                     <div className="lg:w-1/3">
                         <div className="bg-white p-8 rounded-3xl shadow-xl border border-mentawaiDark/5 sticky top-28">
                             

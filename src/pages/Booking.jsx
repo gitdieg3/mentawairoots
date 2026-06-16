@@ -1,42 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { useGlobal } from '../GlobalContext'; // <-- IMPORT JANTUNG
 
 const Booking = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    // STATE LOGIKA STEP & INVOICE
+    // <-- TARIK TOOLS TOAST & SETTINGS DARI JANTUNG
+    const { showToast, settings } = useGlobal(); 
+
     const [step, setStep] = useState(1);
     const [invoice, setInvoice] = useState({ id: '', date: '' });
     
-    // STATE SUPABASE
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // STATE FORM DATA
     const [formData, setFormData] = useState({
-        nama: '',
-        kontak: '',
-        email: '',
-        tanggal: '',
-        paket: '', // Menyimpan id_paket
-        pax: 2,
-        catatan: ''
+        nama: '', kontak: '', email: '', tanggal: '', paket: '', pax: 2, catatan: ''
     });
 
-    // AMBIL DATA DARI DATABASE & TANGKAP PARAMETER URL
     useEffect(() => {
-        const fetchInitialData = async () => {
+        const fetchPackages = async () => {
             try {
-                // Tarik semua paket wisata dari Supabase untuk Dropdown
+                // Cuma narik Paket aja, karena setting udah dari Jantung
                 const { data, error } = await supabase.from('paket_wisata').select('*');
                 if (error) throw error;
-                
+
                 setPackages(data || []);
 
-                // Tangkap data dari halaman Detail via URL Parameter
                 const packageParam = searchParams.get('id');
                 const dateParam = searchParams.get('date');
                 const paxParam = searchParams.get('pax');
@@ -48,7 +41,6 @@ const Booking = () => {
                     initialDate = hariEsok.toISOString().split('T')[0];
                 }
 
-                // Set Default Form
                 setFormData(prev => ({
                     ...prev,
                     tanggal: initialDate,
@@ -58,27 +50,31 @@ const Booking = () => {
 
             } catch (error) {
                 console.error("Gagal menarik data:", error.message);
+                showToast("Gagal memuat data paket.", "error"); // Toast Elegan
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchInitialData();
-    }, [searchParams]);
+        fetchPackages();
+    }, [searchParams, showToast]);
 
-    // HANDLE PERUBAHAN INPUT
     const handleChange = (e) => {
         const { id, value } = e.target;
         const fieldName = id.replace('form-', '');
         setFormData(prev => ({ ...prev, [fieldName]: value }));
     };
 
-    // LOGIKA HITUNG HARGA REAL-TIME DARI DATABASE
     const dataPaketTerpilih = packages.find(p => String(p.id_paket) === String(formData.paket));
     const totalBiaya = dataPaketTerpilih ? dataPaketTerpilih.harga * formData.pax : 0;
     const formatRupiah = (angka) => 'Rp ' + (angka || 0).toLocaleString('id-ID');
 
-    // LANJUT KE STEP 2 (KONFIRMASI INVOICE)
+    // FORMAT NOMOR WA OTOMATIS DARI SETTINGS
+    let adminPhone = settings.nomor_wa || '62895395002626';
+    if (adminPhone.startsWith('0')) {
+        adminPhone = '62' + adminPhone.substring(1);
+    }
+
     const prosesKeStep2 = (e) => {
         e.preventDefault();
         if (!invoice.id) {
@@ -93,19 +89,16 @@ const Booking = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // KEMBALI KE STEP 1
     const kembaliKeStep1 = () => {
         setStep(1);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
-    // LANJUT KE STEP 3 (SIMPAN KE DATABASE & BUKA WA)
     const prosesKeStep3 = async (e) => {
         e.preventDefault();
         setIsSubmitting(true);
 
         try {
-            // 1. SIMPAN KE DATABASE SUPABASE (Tabel data_booking)
             const payload = {
                 id_paket: formData.paket,
                 nama_lengkap: formData.nama,
@@ -121,8 +114,7 @@ const Booking = () => {
             const { error } = await supabase.from('data_booking').insert([payload]);
             if (error) throw error;
 
-            // 2. RAKIT TEKS WHATSAPP
-            let teksWA = `*INVOICE REGISTRASI MENTAWAI HANTAGE*\n`;
+            let teksWA = `*INVOICE REGISTRASI ${(settings.brand_name || 'MENTAWAI HANTAGE').toUpperCase()}*\n`;
             teksWA += `===============================\n\n`;
             teksWA += `• *ID Booking:* ${invoice.id}\n`;
             teksWA += `• *Nama Pemesan:* ${formData.nama}\n`;
@@ -140,10 +132,8 @@ const Booking = () => {
             teksWA += `===============================\n\n`;
             teksWA += `Mohon bantuannya memproses booking saya. Terima kasih! 🙏`;
 
-            // 3. BUKA TAB WHATSAPP
-            window.open(`https://wa.me/62895395002626?text=${encodeURIComponent(teksWA)}`, '_blank');
+            window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(teksWA)}`, '_blank');
 
-            // 4. TRANSISI KE HALAMAN SUKSES
             setTimeout(() => {
                 setStep(3);
                 window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -151,7 +141,8 @@ const Booking = () => {
             }, 800);
 
         } catch (err) {
-            alert("Gagal mengirim data registrasi: " + err.message);
+            // <-- 4. GANTI ALERT JADI TOAST ELEGAN
+            showToast("Gagal mengirim data registrasi: " + err.message, "error");
             setIsSubmitting(false);
         }
     };
@@ -169,7 +160,6 @@ const Booking = () => {
 
     return (
         <>
-            {/* STEP PROGRESS BAR */}
             <div className="bg-white border-b border-mentawaiDark/5 py-5 shadow-sm">
                 <div className="max-w-4xl mx-auto px-6">
                     <div className="flex items-center justify-between relative">
@@ -193,7 +183,6 @@ const Booking = () => {
             </div>
 
             <main className="flex-grow max-w-6xl w-full mx-auto p-6 md:p-10">
-                {/* STEP 1: FORM PENGISIAN DATA */}
                 {step === 1 && (
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-fade-in">
                         <div className="lg:col-span-2 bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-mentawaiDark/5">
@@ -274,7 +263,7 @@ const Booking = () => {
                                 <div className="flex items-start gap-3 bg-[#103D2E]/5 p-5 rounded-2xl border border-mentawaiDark/5">
                                     <input type="checkbox" id="syarat-ketentuan" required className="mt-1 w-4 h-4 text-mentawaiSage focus:ring-mentawaiMint border-slate-300 rounded accent-mentawaiSage" />
                                     <label htmlFor="syarat-ketentuan" className="text-xs text-slate-600 leading-relaxed font-medium">
-                                        Saya menyetujui seluruh <span className="text-mentawaiDark font-bold underline cursor-pointer">Syarat & Ketentuan</span> dari Mentawai Hantage.
+                                        Saya menyetujui seluruh <span className="text-mentawaiDark font-bold underline cursor-pointer">Syarat & Ketentuan</span> dari {settings.brand_name || 'Mentawai Hantage'}.
                                     </label>
                                 </div>
 
@@ -284,7 +273,6 @@ const Booking = () => {
                             </form>
                         </div>
 
-                        {/* Ringkasan Kanan */}
                         <div className="space-y-6">
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-mentawaiDark/5">
                                 <h3 className="text-sm font-bold text-mentawaiDark mb-5 pb-3 border-b border-mentawaiDark/5 uppercase tracking-wider flex items-center gap-2.5">
@@ -308,11 +296,22 @@ const Booking = () => {
                                     </div>
                                 </div>
                             </div>
+                            
+                            <div className="bg-[#103D2E]/5 rounded-3xl p-8 border border-mentawaiDark/5">
+                                <h4 className="font-serif font-bold text-mentawaiDark text-base mb-2.5 flex items-center gap-2">
+                                    <i className="fa-solid fa-headset text-mentawaiMint"></i> Panduan & Bantuan
+                                </h4>
+                                <p className="text-xs text-gray-500 leading-relaxed mb-5">
+                                    Mengalami kesulitan atau butuh penyesuaian khusus? Hubungi tim lokal kami.
+                                </p>
+                                <a href={`https://wa.me/${adminPhone}`} target="_blank" rel="noreferrer" className="block text-center bg-white hover:bg-mentawaiDark hover:text-white text-mentawaiDark font-bold text-xs uppercase tracking-wider py-3.5 px-4 rounded-xl border border-mentawaiDark/10 shadow-sm transition">
+                                    <i className="fa-brands fa-whatsapp text-sm mr-1.5 text-mentawaiMint"></i> Hubungi Tim Lokal
+                                </a>
+                            </div>
                         </div>
                     </div>
                 )}
 
-                {/* STEP 2: KONFIRMASI & INVOICE */}
                 {step === 2 && (
                     <div className="max-w-2xl mx-auto bg-white rounded-3xl overflow-hidden shadow-2xl border border-mentawaiDark/5 animate-fade-in">
                         <div className="bg-[#0B2B20] text-white p-8 text-center relative border-b border-white/5">
@@ -372,7 +371,6 @@ const Booking = () => {
                     </div>
                 )}
 
-                {/* STEP 3: SUKSES */}
                 {step === 3 && (
                     <div className="max-w-md mx-auto text-center bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-mentawaiDark/5 space-y-6 animate-fade-in">
                         <div className="w-20 h-20 bg-mentawaiMint/15 text-mentawaiSage rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner animate-pulse">

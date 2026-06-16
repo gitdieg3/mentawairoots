@@ -9,7 +9,8 @@ const Home = () => {
 
     const [packages, setPackages] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [testimonials, setTestimonials] = useState([]); // State baru untuk Testimoni
+    const [testimonials, setTestimonials] = useState([]);
+    const [settings, setSettings] = useState({}); // STATE BARU UNTUK PENGATURAN WEB
     const [activeCategory, setActiveCategory] = useState('All');
     const [loading, setLoading] = useState(true);
 
@@ -17,21 +18,21 @@ const Home = () => {
     useEffect(() => {
         const fetchHomeData = async () => {
             try {
-                // Tarik data Paket, Kategori, dan Testimoni secara bersamaan!
-                const [pkgRes, catRes, testiRes] = await Promise.all([
+                // Tarik Semua Data Sekaligus! (Paket, Kategori, Testimoni, Pengaturan)
+                const [pkgRes, catRes, testiRes, settingRes] = await Promise.all([
                     supabase.from('paket_wisata').select('*').order('id_paket', { ascending: false }),
                     supabase.from('kategori').select('*').order('id', { ascending: true }),
-                    // Ambil 6 testimoni terbaru aja biar beranda nggak kepanjangan
-                    supabase.from('testimoni').select('*').order('id', { ascending: false }).limit(6) 
+                    supabase.from('testimoni').select('*').order('id', { ascending: false }).limit(6),
+                    supabase.from('pengaturan_web').select('*').eq('id', 1).single() // Tarik Pengaturan Global
                 ]);
 
                 if (pkgRes.error) throw pkgRes.error;
                 if (catRes.error) throw catRes.error;
-                if (testiRes.error) throw testiRes.error;
 
                 setPackages(pkgRes.data || []);
                 setCategories(catRes.data || []);
-                setTestimonials(testiRes.data || []); // Simpan data testimoni ke state
+                setTestimonials(testiRes.data || []);
+                setSettings(settingRes.data || {}); // Simpan Pengaturan
             } catch (error) {
                 console.error("Gagal menarik data Home:", error.message);
             } finally {
@@ -64,7 +65,13 @@ const Home = () => {
             `- *Jumlah Peserta:* ${peserta}\n\n` +
             `Apakah kuota perjalanan untuk rute ini masih tersedia? Terima kasih!`;
 
-        window.open(`https://wa.me/62895395002626?text=${encodeURIComponent(textPesan)}`, '_blank');
+        // FORMAT NOMOR WA OTOMATIS
+        let phone = settings.nomor_wa || '62895395002626'; // Fallback kalau kosong
+        if (phone.startsWith('0')) {
+            phone = '62' + phone.substring(1); // Ubah 08 jadi 628
+        }
+
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(textPesan)}`, '_blank');
     };
 
     const handleOpenPhoto = (src, caption) => {
@@ -145,7 +152,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 2. PACKAGES SECTION (DENGAN FILTER DINAMIS) */}
+            {/* 2. PACKAGES SECTION */}
             <section id="packages" className="py-24 px-6 max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
                     <div>
@@ -159,7 +166,7 @@ const Home = () => {
                     </div>
                 </div>
 
-                {/* TOMBOL FILTER */}
+                {/* TOMBOL FILTER DINAMIS */}
                 <div className="flex flex-wrap gap-2.5 mb-12">
                     <button 
                         onClick={() => setActiveCategory('All')}
@@ -313,7 +320,7 @@ const Home = () => {
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent flex items-end p-8">
                                     <div>
                                         <p className="text-mentawaiMint text-xs font-bold uppercase tracking-widest mb-1">Indigenous Guide & Cultural Advisor</p>
-                                        <h4 className="text-white text-2xl font-serif font-bold">Aman Silaing & Tim Lokal</h4>
+                                        <h4 className="text-white text-2xl font-serif font-bold">Ucok</h4>
                                     </div>
                                 </div>
                             </div>
@@ -332,7 +339,7 @@ const Home = () => {
                             <h2 className="text-4xl md:text-5xl font-serif font-semibold text-mentawaiDark leading-tight mb-6">Tentang Kami & Pemandu Lokal Anda</h2>
                             <div className="space-y-6 text-gray-600 font-light leading-relaxed text-sm md:text-base">
                                 <p>
-                                    Selamat datang di <strong className="text-mentawaiDark font-semibold">Mentawai Hantage</strong>. Kami bukan sekadar agen perjalanan biasa; kami adalah jembatan hidup antara penjelajah dunia dengan peradaban tertua yang masih terjaga murni di pedalaman pulau Siberut.
+                                    Selamat datang di <strong className="text-mentawaiDark font-semibold">{settings.brand_name || 'Mentawai Hantage'}</strong>. Kami bukan sekadar agen perjalanan biasa; kami adalah jembatan hidup antara penjelajah dunia dengan peradaban tertua yang masih terjaga murni di pedalaman pulau Siberut.
                                 </p>
                                 <p>
                                     Didirikan oleh koalisi pemandu lokal asli suku Mentawai dan pegiat ekowisata Sumatera Barat, misi utama kami adalah melestarikan kebudayaan luhur tato, pengobatan alami <em className="italic">Sikerei</em> (dukun adat), serta menjaga kelestarian ekosistem hutan hujan tropis kami.
@@ -367,7 +374,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 6. TESTIMONIALS SECTION (DINAMIS DARI DATABASE) */}
+            {/* 6. TESTIMONIALS SECTION */}
             <section id="testimoni" className="py-24 px-6 bg-[#0B2B20] text-white">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16">
@@ -390,7 +397,6 @@ const Home = () => {
                                 <div key={testi.id} className="bg-white/[0.03] backdrop-blur-md p-8 rounded-3xl border border-white/5 relative hover:-translate-y-2 transition duration-300">
                                     <i className="fa-solid fa-quote-right text-5xl text-mentawaiMint absolute top-6 right-6 opacity-10"></i>
                                     
-                                    {/* Looping Bintang sesuai Rating */}
                                     <div className="flex text-mentawaiMint text-xs mb-6 gap-1">
                                         {[...Array(parseInt(testi.rating) || 5)].map((_, i) => (
                                             <i key={i} className="fa-solid fa-star"></i>
@@ -417,7 +423,7 @@ const Home = () => {
                 </div>
             </section>
 
-            {/* 7. LIGHTBOX MODAL (POPUP FOTO/VIDEO) */}
+            {/* 7. LIGHTBOX MODAL */}
             {lightbox.isOpen && (
                 <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6 transition-all duration-300">
                     <button onClick={closeLightbox} className="absolute top-6 right-6 text-white text-3xl hover:text-mentawaiMint transition">
