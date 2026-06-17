@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../supabaseClient'; // Mengaktifkan jembatan Supabase
+import { supabase } from '../supabaseClient';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -12,69 +12,65 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     
-    // Proses login aman menggunakan enkripsi Supabase Auth
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
     });
 
     if (error) {
-      alert(`Gagal Login: ${error.message}`);
+      alert(`Gagal: ${error.message}`);
       setLoading(false);
       return;
     }
 
     setLoading(false);
-    navigate('/admin'); // Jika sukses, lempar ke halaman panel kontrol admin
+    navigate('/admin');
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center items-center p-6">
-      <div className="w-full max-w-md bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-        <div className="bg-tqmNavy p-8 text-center">
-          <h2 className="text-3xl font-extrabold tracking-wide text-white mb-1">
-            Tqm<span className="text-tqmYellow">Travel</span>
+    <div className="min-h-screen bg-[#1a2e28] flex flex-col justify-center items-center p-6">
+      <div className="w-full max-w-sm bg-[#ffffff] rounded-2xl shadow-2xl overflow-hidden">
+        {/* Header dengan sentuhan warna alam */}
+        <div className="bg-[#2d4a3e] p-8 text-center">
+          <h2 className="text-2xl font-bold text-white mb-1">
+            Mentawai<span className="text-[#a8c69f]">Roots</span>
           </h2>
-          <p className="text-xs text-gray-300 font-medium tracking-widest uppercase">Secure Control Panel</p>
+          <p className="text-[10px] text-[#a8c69f] uppercase tracking-widest font-semibold">
+            Admin Access Portal
+          </p>
         </div>
         
-        <form onSubmit={handleLogin} className="p-8 space-y-6">
+        <form onSubmit={handleLogin} className="p-8 space-y-5">
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Email Administrator</label>
-            <div className="relative">
-              <i className="fa-solid fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input 
-                type="email" 
-                required 
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-tqmNavy transition text-sm" 
-                placeholder="admin@tqmtravel.com" 
-              />
-            </div>
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Email</label>
+            <input 
+              type="email" 
+              required 
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2d4a3e] transition text-sm" 
+              placeholder="admin@mentawairoots.com" 
+            />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Password</label>
-            <div className="relative">
-              <i className="fa-solid fa-lock absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-              <input 
-                type="password" 
-                required 
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-11 pr-4 py-3.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-tqmNavy transition text-sm" 
-                placeholder="••••••••" 
-              />
-            </div>
+            <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Password</label>
+            <input 
+              type="password" 
+              required 
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2d4a3e] transition text-sm" 
+              placeholder="••••••••" 
+            />
           </div>
 
           <button 
             type="submit" 
             disabled={loading}
-            className="w-full bg-tqmYellow hover:bg-yellow-500 text-tqmNavy font-extrabold py-3.5 rounded-xl transition duration-300 shadow-md flex justify-center items-center gap-2 cursor-pointer"
+            className="w-full bg-[#2d4a3e] hover:bg-[#1a2e28] text-white font-bold py-3 rounded-lg transition duration-300 shadow-md mt-4"
           >
-            {loading ? 'Memverifikasi...' : 'Login ke Panel'} <i className="fa-solid fa-arrow-right-to-bracket"></i>
+            {loading ? 'Authenticating...' : 'Masuk Dashboard'}
           </button>
         </form>
       </div>

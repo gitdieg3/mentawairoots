@@ -1,30 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
+import { useGlobal } from '../GlobalContext'; 
 
 const Admin = () => {
 const navigate = useNavigate();
 const [activeTab, setActiveTab] = useState('dashboard');
 const [loading, setLoading] = useState(true);
 
-// ================= STATE DATA DATABASE =================
+const { showToast } = useGlobal();
+
 const [bookings, setBookings] = useState([]);
 const [packages, setPackages] = useState([]);
 const [kategoriList, setKategoriList] = useState([]);
 const [testimoniList, setTestimoniList] = useState([]);
+const [mediaList, setMediaList] = useState([]); // TAMBAHAN: State Media
 const [settings, setSettings] = useState({ id: null, brand_name: '', nomor_wa: '', email: '', alamat: '', instagram: '', facebook: '' });
 
-// ================= STATE NOTIFIKASI =================
-const [toast, setToast] = useState({ show: false, message: '', type: 'success' });
-const showToast = (message, type = 'success') => {
-    setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: '', type: 'success' }), 3000);
-};
+// TAMBAHAN: State Form Upload Media Baru
+const [newMedia, setNewMedia] = useState({ tipe: 'photo', judul: '', subjudul: '', deskripsi: '' });
+const [mediaFile, setMediaFile] = useState(null);
+const [isUploadingMedia, setIsUploadingMedia] = useState(false);
 
-// ================= STATE CUSTOM DIALOG (PENGGANTI ALERT/CONFIRM BAWAAN) =================
 const [confirmDialog, setConfirmDialog] = useState({ isOpen: false, title: '', message: '', action: null, type: 'danger' });
 
-// ================= STATE FORM MODAL =================
 const [isModalOpen, setIsModalOpen] = useState(false);
 const [isEditMode, setIsEditMode] = useState(false);
 const [editPackageId, setEditPackageId] = useState(null);
@@ -39,7 +38,6 @@ const [isModalTestiOpen, setIsModalTestiOpen] = useState(false);
 const [newTestimoni, setNewTestimoni] = useState({ nama: '', asal: '', rating: '5', ulasan: '' });
 const [testiFotoFile, setTestiFotoFile] = useState(null);
 
-// ================= FETCHING DATA =================
 useEffect(() => {
     const checkUser = async () => {
         const { data: { session } } = await supabase.auth.getSession();
@@ -51,18 +49,20 @@ useEffect(() => {
 const fetchData = async () => {
     setLoading(true);
     try {
-        const [bData, pData, kData, tData, sData] = await Promise.all([
+        const [bData, pData, kData, tData, sData, mData] = await Promise.all([
             supabase.from('data_booking').select('*, paket_wisata(nama_paket)').order('tanggal_pesan', { ascending: false }),
             supabase.from('paket_wisata').select('*').order('nama_paket', { ascending: true }),
             supabase.from('kategori').select('*').order('id', { ascending: true }),
             supabase.from('testimoni').select('*').order('id', { ascending: false }),
-            supabase.from('pengaturan_web').select('*').limit(1) 
+            supabase.from('pengaturan_web').select('*').limit(1),
+            supabase.from('media_kegiatan').select('*').order('id', { ascending: false }) // TARIK DATA MEDIA
         ]);
 
         setBookings(bData.data || []);
         setPackages(pData.data || []);
         setKategoriList(kData.data || []);
         setTestimoniList(tData.data || []);
+        setMediaList(mData.data || []); // SET DATA MEDIA
         
         if (sData.data && sData.data.length > 0) {
             setSettings(sData.data[0]);
@@ -74,9 +74,50 @@ const fetchData = async () => {
     }
 };
 
-useEffect(() => { fetchData(); }, [activeTab]);
+useEffect(() => { fetchData(); }, []); 
 
-// ================= FUNGSI CRUD PAKET =================
+// ================= FUNGSI UPLOAD MEDIA BARU =================
+const handleSaveMedia = async (e) => {
+    e.preventDefault();
+    if (!mediaFile) {
+        showToast("Harap pilih file (Gambar/Video) untuk diunggah.", "error");
+        return;
+    }
+    
+    setIsUploadingMedia(true);
+    try {
+        const fileExt = mediaFile.name.split('.').pop();
+        const fileName = `media_${newMedia.tipe}_${Date.now()}.${fileExt}`;
+        
+        // Upload ke Supabase Storage (pastikan limit size video aman)
+        const { error: uploadError } = await supabase.storage.from('wisata_media').upload(`dokumentasi/${fileName}`, mediaFile);
+        if (uploadError) throw uploadError;
+
+        const url_media = supabase.storage.from('wisata_media').getPublicUrl(`dokumentasi/${fileName}`).data.publicUrl;
+
+        // Insert ke database
+        const { error: dbError } = await supabase.from('media_kegiatan').insert([{
+            tipe: newMedia.tipe,
+            judul: newMedia.judul,
+            subjudul: newMedia.subjudul,
+            deskripsi: newMedia.deskripsi,
+            url_media: url_media
+        }]);
+
+        if (dbError) throw dbError;
+
+        showToast(`Media ${newMedia.tipe} berhasil dipublikasikan!`, "success");
+        setNewMedia({ tipe: 'photo', judul: '', subjudul: '', deskripsi: '' });
+        setMediaFile(null);
+        document.getElementById('media_file_input').value = ''; // Reset file input
+        fetchData();
+    } catch (error) {
+        showToast("Gagal unggah media: " + error.message, "error");
+    } finally {
+        setIsUploadingMedia(false);
+    }
+};
+
 const openAddModal = () => {
     setIsEditMode(false); setEditPackageId(null);
     setNewPackage({ nama_paket: '', kategori: 'Private Trip', durasi: '', harga: '', deskripsi_singkat: '', deskripsi_lengkap: '', fasilitas_include: '', fasilitas_exclude: '' });
@@ -134,16 +175,14 @@ const handleSavePackage = async (e) => {
     } catch (error) { showToast(error.message, "error"); }
 };
 
-// ================= FUNGSI CRUD LAINNYA (DENGAN MODERN CONFIRM) =================
 const deleteRecord = (table, colId, id, message) => {
-    // Menggunakan Custom Dialog pengganti window.confirm()
     setConfirmDialog({
         isOpen: true,
         type: 'danger',
         title: 'Hapus Data',
         message: 'Tindakan ini bersifat permanen dan tidak dapat dibatalkan. Lanjutkan menghapus data?',
         action: async () => {
-            setConfirmDialog(prev => ({ ...prev, isOpen: false })); // Tutup dialog
+            setConfirmDialog(prev => ({ ...prev, isOpen: false })); 
             const { error } = await supabase.from(table).delete().eq(colId, id);
             if (!error) { showToast(message, "success"); fetchData(); }
             else showToast("Gagal menghapus data.", "error");
@@ -152,7 +191,6 @@ const deleteRecord = (table, colId, id, message) => {
 };
 
 const handleLogout = () => {
-    // Menggunakan Custom Dialog untuk konfirmasi logout
     setConfirmDialog({
         isOpen: true,
         type: 'warning',
@@ -228,7 +266,6 @@ const handleSavePengaturan = async (e) => {
 const totalRevenue = bookings.reduce((sum, item) => sum + Number(item.total_harga || 0), 0);
 const formatRupiah = (angka) => '$ ' + (angka / 15000).toLocaleString('en-US', {minimumFractionDigits: 0, maximumFractionDigits: 0}); 
 
-// Helper for navigation
 const navItems = [
     { id: 'dashboard', label: 'Overview', icon: 'fa-border-all' },
     { id: 'paket', label: 'Products', icon: 'fa-box' },
@@ -239,16 +276,7 @@ const navItems = [
 
 return (
     <div className="flex h-screen overflow-hidden bg-[#F4F6F5] text-[#111827] font-sans selection:bg-[#D4F85A] selection:text-[#0A1610]">
-
-        {/* PREMIUM TOAST */}
-        {toast.show && (
-            <div className={`fixed top-6 right-6 px-5 py-3.5 rounded-xl shadow-xl border font-medium z-[100] animate-fade-in flex items-center gap-3 text-sm ${toast.type === 'success' ? 'bg-[#0A1610] border-[#1A3626] text-[#D4F85A]' : 'bg-red-50 border-red-200 text-red-600'}`}>
-                <i className={`fa-solid ${toast.type === 'success' ? 'fa-circle-check' : 'fa-triangle-exclamation'}`}></i>
-                {toast.message}
-            </div>
-        )}
-
-        {/* SIDEBAR (Dark Forest Green) */}
+        {/* SIDEBAR */}
         <div className="w-64 bg-[#0A1610] text-[#8F9B94] flex flex-col h-full z-20 relative border-r border-[#1A3626]">
             <div className="p-8 pb-4">
                 <h2 className="text-xl font-bold text-white flex items-center gap-2.5">
@@ -300,7 +328,6 @@ return (
 
         {/* MAIN CONTENT AREA */}
         <div className="flex-1 flex flex-col h-full relative overflow-y-auto">
-            {/* TOP HEADER */}
             <div className="bg-[#F4F6F5] px-10 py-6 flex justify-between items-center sticky top-0 z-10">
                 <div className="flex items-center gap-3 cursor-pointer group">
                     <h1 className="text-lg font-bold text-[#111827]">Sales Admin</h1>
@@ -334,9 +361,7 @@ return (
                                     </div>
                                 </div>
 
-                                {/* HERO METRICS */}
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                                    {/* Highlight Card */}
                                     <div className="bg-[#10291C] rounded-2xl p-6 text-white shadow-sm flex flex-col justify-between relative overflow-hidden">
                                         <div className="absolute -right-10 -top-10 w-40 h-40 bg-[#D4F85A] rounded-full blur-[80px] opacity-20 pointer-events-none"></div>
                                         <div>
@@ -349,7 +374,6 @@ return (
                                         <button onClick={() => setActiveTab('booking')} className="text-sm text-[#D4F85A] font-medium text-left mt-6 flex items-center gap-1 hover:gap-2 transition-all">See Statistics <i className="fa-solid fa-arrow-right text-xs"></i></button>
                                     </div>
 
-                                    {/* Stat Card 1 */}
                                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
                                         <div className="flex justify-between items-start mb-4">
                                             <p className="text-sm font-medium text-gray-500">Net Income</p>
@@ -362,7 +386,6 @@ return (
                                         </div>
                                     </div>
 
-                                    {/* Stat Card 2 */}
                                     <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col justify-between">
                                         <div className="flex justify-between items-start mb-4">
                                             <p className="text-sm font-medium text-gray-500">Total Leads</p>
@@ -376,7 +399,6 @@ return (
                                     </div>
                                 </div>
 
-                                {/* TRANSACTIONS TABLE */}
                                 <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
                                     <div className="flex justify-between items-center mb-6">
                                         <h3 className="text-base font-bold text-[#111827]">Transactions</h3>
@@ -536,28 +558,115 @@ return (
                             </div>
                         )}
 
-                        {/* TAB: PENGATURAN WEB */}
+                        {/* TAB: PENGATURAN WEB (Termasuk Kelola Media) */}
                         {activeTab === 'pengaturan' && (
-                            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 max-w-4xl animate-fade-in">
-                                <div className="mb-8 border-b border-gray-100 pb-6"><h2 className="text-2xl font-bold text-[#111827]">General Settings</h2><p className="text-gray-500 text-sm mt-1">Manage global properties for your storefront.</p></div>
-                                <form onSubmit={handleSavePengaturan}>
-                                    <h3 className="font-bold text-[#10291C] mb-5 text-sm uppercase tracking-wider">Business Identity</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                                        <div><label className="block text-xs font-medium text-gray-500 mb-2">Brand Name</label><input type="text" value={settings.brand_name || ''} onChange={e => setSettings({ ...settings, brand_name: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
-                                        <div><label className="block text-xs font-medium text-gray-500 mb-2">WhatsApp Number</label><input type="text" value={settings.nomor_wa || ''} onChange={e => setSettings({ ...settings, nomor_wa: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
-                                    </div>
-                                    <div className="mb-6"><label className="block text-xs font-medium text-gray-500 mb-2">Support Email</label><input type="email" value={settings.email || ''} onChange={e => setSettings({ ...settings, email: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
-                                    <div className="mb-10"><label className="block text-xs font-medium text-gray-500 mb-2">Office Address</label><textarea rows="3" value={settings.alamat || ''} onChange={e => setSettings({ ...settings, alamat: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm"></textarea></div>
+                            <div className="animate-fade-in space-y-8">
+                                {/* CARD 1: GENERAL SETTINGS */}
+                                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 max-w-4xl">
+                                    <div className="mb-8 border-b border-gray-100 pb-6"><h2 className="text-2xl font-bold text-[#111827]">General Settings</h2><p className="text-gray-500 text-sm mt-1">Manage global properties for your storefront.</p></div>
+                                    <form onSubmit={handleSavePengaturan}>
+                                        <h3 className="font-bold text-[#10291C] mb-5 text-sm uppercase tracking-wider">Business Identity</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                                            <div><label className="block text-xs font-medium text-gray-500 mb-2">Brand Name</label><input type="text" value={settings.brand_name || ''} onChange={e => setSettings({ ...settings, brand_name: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
+                                            <div><label className="block text-xs font-medium text-gray-500 mb-2">WhatsApp Number</label><input type="text" value={settings.nomor_wa || ''} onChange={e => setSettings({ ...settings, nomor_wa: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
+                                        </div>
+                                        <div className="mb-6"><label className="block text-xs font-medium text-gray-500 mb-2">Support Email</label><input type="email" value={settings.email || ''} onChange={e => setSettings({ ...settings, email: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
+                                        <div className="mb-10"><label className="block text-xs font-medium text-gray-500 mb-2">Office Address</label><textarea rows="3" value={settings.alamat || ''} onChange={e => setSettings({ ...settings, alamat: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm"></textarea></div>
 
-                                    <h3 className="font-bold text-[#10291C] mb-5 text-sm uppercase tracking-wider">Social Media</h3>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
-                                        <div><label className="block text-xs font-medium text-gray-500 mb-2">Instagram URL</label><input type="text" value={settings.instagram || ''} onChange={e => setSettings({ ...settings, instagram: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
-                                        <div><label className="block text-xs font-medium text-gray-500 mb-2">Facebook URL</label><input type="text" value={settings.facebook || ''} onChange={e => setSettings({ ...settings, facebook: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
+                                        <h3 className="font-bold text-[#10291C] mb-5 text-sm uppercase tracking-wider">Social Media</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+                                            <div><label className="block text-xs font-medium text-gray-500 mb-2">Instagram URL</label><input type="text" value={settings.instagram || ''} onChange={e => setSettings({ ...settings, instagram: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
+                                            <div><label className="block text-xs font-medium text-gray-500 mb-2">Facebook URL</label><input type="text" value={settings.facebook || ''} onChange={e => setSettings({ ...settings, facebook: e.target.value })} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" /></div>
+                                        </div>
+                                        <div className="flex justify-end pt-6 border-t border-gray-100">
+                                            <button type="submit" className="bg-[#10291C] hover:bg-[#1A3626] text-white font-medium px-8 py-3 rounded-xl transition">Save Changes</button>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                {/* CARD 2: KELOLA MEDIA DOKUMENTASI (FITUR BARU) */}
+                                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-10 max-w-4xl">
+                                    <div className="mb-8 border-b border-gray-100 pb-6">
+                                        <h2 className="text-2xl font-bold text-[#111827]">Media Gallery Management</h2>
+                                        <p className="text-gray-500 text-sm mt-1">Unggah foto dan video dokumentasi untuk ditampilkan di beranda.</p>
                                     </div>
-                                    <div className="flex justify-end pt-6 border-t border-gray-100">
-                                        <button type="submit" className="bg-[#10291C] hover:bg-[#1A3626] text-white font-medium px-8 py-3 rounded-xl transition">Save Changes</button>
+                                    
+                                    {/* Form Upload Media */}
+                                    <form onSubmit={handleSaveMedia} className="mb-10 bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                                        <h3 className="font-bold text-[#10291C] mb-4 text-sm uppercase tracking-wider">Unggah Media Baru</h3>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-500 mb-2">Tipe Media</label>
+                                                <select value={newMedia.tipe} onChange={e => setNewMedia({...newMedia, tipe: e.target.value})} className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm">
+                                                    <option value="photo">Foto Dokumentasi</option>
+                                                    <option value="video">Video Dokumentasi</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-500 mb-2">Pilih File (Maks. 10MB disarankan)</label>
+                                                <input type="file" id="media_file_input" accept={newMedia.tipe === 'photo' ? 'image/*' : 'video/*'} onChange={e => setMediaFile(e.target.files[0])} className="w-full text-xs text-gray-500 file:mr-4 file:py-2.5 file:px-4 file:rounded-lg file:border-0 file:font-medium file:bg-[#10291C] file:text-white cursor-pointer bg-white border border-gray-200 rounded-xl p-1" />
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-500 mb-2">Judul Media</label>
+                                                <input type="text" value={newMedia.judul} onChange={e => setNewMedia({...newMedia, judul: e.target.value})} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" placeholder="Contoh: Menombak Ikan" />
+                                            </div>
+                                            <div>
+                                                <label className="block text-xs font-medium text-gray-500 mb-2">Sub-Judul / Label</label>
+                                                <input type="text" value={newMedia.subjudul} onChange={e => setNewMedia({...newMedia, subjudul: e.target.value})} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" placeholder="Contoh: Kehidupan Asli Mentawai" />
+                                            </div>
+                                        </div>
+                                        <div className="mb-5">
+                                            <label className="block text-xs font-medium text-gray-500 mb-2">Deskripsi Singkat (Tampil di pop-up)</label>
+                                            <input type="text" value={newMedia.deskripsi} onChange={e => setNewMedia({...newMedia, deskripsi: e.target.value})} required className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:border-[#10291C] text-sm" placeholder="Jelaskan sedikit tentang momen ini..." />
+                                        </div>
+                                        <div className="flex justify-end">
+                                            <button type="submit" disabled={isUploadingMedia} className="bg-[#D4F85A] hover:bg-[#c2e846] text-[#0A1610] font-bold px-8 py-3 rounded-xl transition flex items-center gap-2">
+                                                {isUploadingMedia ? <><i className="fa-solid fa-spinner fa-spin"></i> Mengunggah...</> : <><i className="fa-solid fa-upload"></i> Unggah & Publikasikan</>}
+                                            </button>
+                                        </div>
+                                    </form>
+
+                                    {/* Tabel Daftar Media Terunggah */}
+                                    <h3 className="font-bold text-[#111827] mb-4">Daftar Media Publik</h3>
+                                    <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                                        <table className="w-full text-left border-collapse">
+                                            <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 uppercase text-[10px] font-bold tracking-wider">
+                                                <tr><th className="p-4 w-16 text-center">Tipe</th><th className="p-4">Visual</th><th className="p-4">Info Media</th><th className="p-4 text-right pr-6">Action</th></tr>
+                                            </thead>
+                                            <tbody className="divide-y divide-gray-100">
+                                                {mediaList.map((media) => (
+                                                    <tr key={media.id} className="hover:bg-gray-50 transition">
+                                                        <td className="p-4 text-center">
+                                                            <span className={`w-8 h-8 rounded-full flex items-center justify-center mx-auto text-xs ${media.tipe === 'photo' ? 'bg-blue-50 text-blue-500' : 'bg-red-50 text-red-500'}`}>
+                                                                <i className={`fa-solid ${media.tipe === 'photo' ? 'fa-image' : 'fa-video'}`}></i>
+                                                            </span>
+                                                        </td>
+                                                        <td className="p-4">
+                                                            {media.tipe === 'photo' ? (
+                                                                <img src={media.url_media} className="w-16 h-10 object-cover rounded-md border border-gray-200" alt="media" />
+                                                            ) : (
+                                                                <div className="w-16 h-10 bg-black flex items-center justify-center rounded-md border border-gray-200"><i className="fa-solid fa-play text-white text-xs"></i></div>
+                                                            )}
+                                                        </td>
+                                                        <td className="p-4">
+                                                            <p className="font-bold text-[#111827] text-sm">{media.judul}</p>
+                                                            <p className="text-[10px] text-gray-500 mt-0.5">{media.subjudul}</p>
+                                                        </td>
+                                                        <td className="p-4 text-right pr-6">
+                                                            <button onClick={() => deleteRecord('media_kegiatan', 'id', media.id, 'Media berhasil dihapus!')} className="text-gray-400 hover:text-red-500 transition">
+                                                                <i className="fa-regular fa-trash-can"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                ))}
+                                                {mediaList.length === 0 && <tr><td colSpan="4" className="p-8 text-center text-sm text-gray-400">Belum ada media yang diunggah.</td></tr>}
+                                            </tbody>
+                                        </table>
                                     </div>
-                                </form>
+                                </div>
+
                             </div>
                         )}
                     </>
@@ -565,7 +674,7 @@ return (
             </div>
         </div>
 
-        {/* ================= CUSTOM CONFIRMATION DIALOG (MODERN) ================= */}
+        {/* ================= CUSTOM CONFIRMATION DIALOG ================= */}
         {confirmDialog.isOpen && (
             <div className="fixed inset-0 bg-[#0A1610]/40 backdrop-blur-sm z-[150] flex items-center justify-center p-4">
                 <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm p-8 text-center border border-gray-100 animate-fade-in">
@@ -575,18 +684,8 @@ return (
                     <h3 className="text-xl font-bold text-[#111827] mb-3">{confirmDialog.title}</h3>
                     <p className="text-sm text-gray-500 mb-8 leading-relaxed">{confirmDialog.message}</p>
                     <div className="flex gap-3 w-full">
-                        <button 
-                            onClick={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))} 
-                            className="flex-1 px-4 py-3 bg-gray-50 hover:bg-gray-100 text-gray-600 font-medium rounded-xl transition text-sm"
-                        >
-                            Batal
-                        </button>
-                        <button 
-                            onClick={confirmDialog.action} 
-                            className={`flex-1 px-4 py-3 text-white font-medium rounded-xl transition text-sm ${confirmDialog.type === 'danger' ? 'bg-red-500 hover:bg-red-600 shadow-md shadow-red-500/20' : 'bg-[#10291C] hover:bg-[#1A3626] shadow-md shadow-[#10291C]/20'}`}
-                        >
-                            Ya, Lanjutkan
-                        </button>
+                        <button onClick={() => setConfirmDialog(prev => ({ ...prev, isOpen: false }))} className="flex-1 px-4 py-3 bg-gray-50 hover:bg-gray-100 text-gray-600 font-medium rounded-xl transition text-sm">Batal</button>
+                        <button onClick={confirmDialog.action} className={`flex-1 px-4 py-3 text-white font-medium rounded-xl transition text-sm ${confirmDialog.type === 'danger' ? 'bg-red-500 hover:bg-red-600' : 'bg-[#10291C] hover:bg-[#1A3626]'}`}>Ya, Lanjutkan</button>
                     </div>
                 </div>
             </div>
@@ -668,8 +767,6 @@ return (
         )}
     </div>
 );
-
-
 };
 
 export default Admin;
