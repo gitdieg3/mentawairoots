@@ -10,7 +10,7 @@ const Home = () => {
     const [categories, setCategories] = useState([]);
     const [testimonials, setTestimonials] = useState([]);
     const [mediaList, setMediaList] = useState([]); // STATE UNTUK MEDIA
-    const [settings, setSettings] = useState({}); 
+    const [settings, setSettings] = useState({});
     const [activeCategory, setActiveCategory] = useState('All');
     const [loading, setLoading] = useState(true);
 
@@ -21,7 +21,7 @@ const Home = () => {
                 const [pkgRes, catRes, testiRes, settingRes, mediaRes] = await Promise.all([
                     supabase.from('paket_wisata').select('*').order('id_paket', { ascending: false }),
                     supabase.from('kategori').select('*').order('id', { ascending: true }),
-                    supabase.from('testimoni').select('*').order('id', { ascending: false }), 
+                    supabase.from('testimoni').select('*').order('id', { ascending: false }),
                     supabase.from('pengaturan_web').select('*').eq('id', 1).single(),
                     supabase.from('media_kegiatan').select('*').order('id', { ascending: false }) // TARIK MEDIA
                 ]);
@@ -32,7 +32,7 @@ const Home = () => {
                 setPackages(pkgRes.data || []);
                 setCategories(catRes.data || []);
                 setTestimonials(testiRes.data || []);
-                setSettings(settingRes.data || {}); 
+                setSettings(settingRes.data || {});
                 setMediaList(mediaRes.data || []); // SIMPAN MEDIA
             } catch (error) {
                 console.error("Gagal menarik data Home:", error.message);
@@ -57,14 +57,15 @@ const Home = () => {
             return;
         }
 
-        let textPesan = `Halo Mentawai Hantage!\n\nSaya ingin berkonsultasi mengenai petualangan ekspedisi Mentawai dengan rincian berikut:\n` +
+        let textPesan = `Halo Mentawai roots!\n\nSaya ingin berkonsultasi mengenai petualangan ekspedisi Mentawai dengan rincian berikut:\n` +
             `- *Kategori Adventure:* ${kategori}\n` +
             `- *Tanggal Keberangkatan:* ${tanggal}\n` +
             `- *Jumlah Peserta:* ${peserta}\n\n` +
             `Apakah kuota perjalanan untuk rute ini masih tersedia? Terima kasih!`;
 
-        let phone = settings.nomor_wa || '62895395002626'; 
-        if (phone.startsWith('0')) phone = '62' + phone.substring(1); 
+        let phone = settings.nomor_wa || '628126774808';
+        phone = phone.replace(/\D/g, ''); // <-- TAMBAHAN: Bersihkan semua simbol & spasi
+        if (phone.startsWith('0')) phone = '62' + phone.substring(1);
         window.open(`https://wa.me/${phone}?text=${encodeURIComponent(textPesan)}`, '_blank');
     };
 
@@ -144,14 +145,14 @@ const Home = () => {
                 </div>
 
                 <div className="flex flex-wrap gap-2.5 mb-12">
-                    <button 
+                    <button
                         onClick={() => setActiveCategory('All')}
                         className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md transition-all ${activeCategory === 'All' ? 'bg-[#103D2E] text-[#FAF8F5]' : 'bg-white hover:bg-mentawaiDark/5 text-mentawaiDark/80 border border-mentawaiDark/10'}`}
                     >
                         All Expeditions
                     </button>
                     {categories.map(kat => (
-                        <button 
+                        <button
                             key={kat.id}
                             onClick={() => setActiveCategory(kat.nama)}
                             className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md transition-all ${activeCategory === kat.nama ? 'bg-[#103D2E] text-[#FAF8F5]' : 'bg-white hover:bg-mentawaiDark/5 text-mentawaiDark/80 border border-mentawaiDark/10'}`}
@@ -180,7 +181,7 @@ const Home = () => {
 
             {/* SEKARANG CUKUP PANGGIL KOMPONEN-KOMPONEN INI AJA, BERSIH BANGET KAN? */}
             <MediaGallery mediaData={mediaList} />
-            
+
             <section className="py-16 bg-white border-b border-mentawaiDark/5">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">

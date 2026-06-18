@@ -9,7 +9,7 @@ const Detail = () => {
     const packageId = searchParams.get('id');
 
     // <-- 2. TARIK TOOLS TOAST DARI JANTUNG
-    const { showToast } = useGlobal(); 
+    const { showToast } = useGlobal();
 
     // STATE UNTUK DATA SUPABASE
     const [packageData, setPackageData] = useState(null);
@@ -34,11 +34,11 @@ const Detail = () => {
                     .from('paket_wisata')
                     .select('*')
                     .eq('id_paket', packageId)
-                    .single(); 
-                
+                    .single();
+
                 if (pkgError) throw pkgError;
                 setPackageData(pkg);
-                setMainImage(pkg.gambar); 
+                setMainImage(pkg.gambar);
 
                 const { data: itin } = await supabase
                     .from('itinerary')
@@ -55,9 +55,9 @@ const Detail = () => {
 
             } catch (error) {
                 console.error("Error fetching detail:", error.message);
-                
+
                 // <-- 3. GANTI ALERT JADI TOAST ELEGAN
-                showToast("Gagal memuat detail paket atau paket tidak ditemukan.", "error"); 
+                showToast("Gagal memuat detail paket atau paket tidak ditemukan.", "error");
                 navigate('/');
             } finally {
                 setLoading(false);
@@ -93,7 +93,7 @@ const Detail = () => {
         const items = text.split('\n').filter(item => item.trim() !== '');
         return items.map((item, index) => (
             <li key={index} className="flex items-start gap-3">
-                <i className="fa-solid fa-circle text-[6px] mt-2 opacity-70"></i> 
+                <i className="fa-solid fa-circle text-[6px] mt-2 opacity-70"></i>
                 <span>{item}</span>
             </li>
         ));
@@ -137,21 +137,21 @@ const Detail = () => {
                                 <img src={mainImage} className="w-full h-full object-cover transition duration-500" alt="Main Expedition" />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent pointer-events-none"></div>
                             </div>
-                            
+
                             <div className="flex gap-4 overflow-x-auto snap-x pb-3 custom-scrollbar">
-                                <img 
-                                    src={packageData.gambar} 
-                                    className={`gallery-thumb w-28 h-20 object-cover rounded-2xl snap-start shadow-sm border-2 transition duration-300 cursor-pointer ${mainImage === packageData.gambar ? 'border-mentawaiMint opacity-100' : 'border-transparent opacity-70 hover:opacity-100 hover:border-mentawaiSage'}`} 
-                                    onClick={() => setMainImage(packageData.gambar)} 
-                                    alt="Thumbnail Utama" 
+                                <img
+                                    src={packageData.gambar}
+                                    className={`gallery-thumb w-28 h-20 object-cover rounded-2xl snap-start shadow-sm border-2 transition duration-300 cursor-pointer ${mainImage === packageData.gambar ? 'border-mentawaiMint opacity-100' : 'border-transparent opacity-70 hover:opacity-100 hover:border-mentawaiSage'}`}
+                                    onClick={() => setMainImage(packageData.gambar)}
+                                    alt="Thumbnail Utama"
                                 />
                                 {galleries.map((gal) => (
-                                    <img 
+                                    <img
                                         key={gal.id_galeri}
-                                        src={gal.nama_file} 
-                                        className={`gallery-thumb w-28 h-20 object-cover rounded-2xl snap-start shadow-sm border-2 transition duration-300 cursor-pointer ${mainImage === gal.nama_file ? 'border-mentawaiMint opacity-100' : 'border-transparent opacity-70 hover:opacity-100 hover:border-mentawaiSage'}`} 
-                                        onClick={() => setMainImage(gal.nama_file)} 
-                                        alt="Thumbnail Galeri" 
+                                        src={gal.nama_file}
+                                        className={`gallery-thumb w-28 h-20 object-cover rounded-2xl snap-start shadow-sm border-2 transition duration-300 cursor-pointer ${mainImage === gal.nama_file ? 'border-mentawaiMint opacity-100' : 'border-transparent opacity-70 hover:opacity-100 hover:border-mentawaiSage'}`}
+                                        onClick={() => setMainImage(gal.nama_file)}
+                                        alt="Thumbnail Galeri"
                                     />
                                 ))}
                             </div>
@@ -173,7 +173,7 @@ const Detail = () => {
                                     {renderFasilitas(packageData.fasilitas_include)}
                                 </ul>
                             </div>
-                            
+
                             <div className="bg-amber-500/5 p-8 rounded-3xl border border-amber-500/10">
                                 <h3 className="text-sm font-bold text-amber-900 mb-5 uppercase tracking-wider flex items-center gap-3">
                                     <span className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-700 flex items-center justify-center text-xs"><i className="fa-solid fa-xmark"></i></span> What's Excluded
@@ -186,7 +186,7 @@ const Detail = () => {
 
                         <div className="mb-12 bg-white p-8 md:p-10 rounded-3xl shadow-sm border border-mentawaiDark/5">
                             <h2 className="text-2xl font-serif font-bold text-mentawaiDark mb-8 border-b border-mentawaiDark/5 pb-3">Detail Itinerary</h2>
-                            
+
                             <div className="space-y-5">
                                 {itineraries.length === 0 ? (
                                     <p className="text-gray-500 italic text-sm">Jadwal itinerary belum tersedia untuk paket ini.</p>
@@ -212,11 +212,15 @@ const Detail = () => {
 
                     <div className="lg:w-1/3">
                         <div className="bg-white p-8 rounded-3xl shadow-xl border border-mentawaiDark/5 sticky top-28">
-                            
+
                             <div className="mb-8 border-b border-mentawaiDark/5 pb-6">
-                                <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest mb-1.5">Harga Dasar (Mulai Dari)</p>
+
                                 <p className="text-3xl font-black text-mentawaiDark font-serif">
-                                    Rp {packageData.harga.toLocaleString('id-ID')} <span className="text-xs font-sans font-normal text-gray-400">/ pax</span>
+                                    {packageData.harga > 0 ? (
+                                        <>Rp {packageData.harga.toLocaleString('id-ID')} <span className="text-xs font-sans font-normal text-gray-400">/ pax</span></>
+                                    ) : (
+                                        <span className="text-2xl italic">Flexible Pricing</span>
+                                    )}
                                 </p>
                             </div>
 
@@ -239,7 +243,7 @@ const Detail = () => {
                                         </div>
                                         <select value={pax} onChange={(e) => setPax(Number(e.target.value))} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition text-sm appearance-none cursor-pointer">
                                             {[...Array(10).keys()].map(n => (
-                                                <option key={n+1} value={n+1}>{n+1} Orang</option>
+                                                <option key={n + 1} value={n + 1}>{n + 1} Orang</option>
                                             ))}
                                             <option value="11">Rombongan Besar (Hubungi Kami)</option>
                                         </select>
@@ -253,7 +257,7 @@ const Detail = () => {
                                     <div>
                                         <span className="text-[9px] text-gray-400 font-bold block uppercase tracking-wider mb-0.5">Estimasi Total Biaya</span>
                                         <span className="font-extrabold text-mentawaiSage text-xl">
-                                            Rp {(packageData.harga * pax).toLocaleString('id-ID')}
+                                            {packageData.harga > 0 ? `Rp ${(packageData.harga * pax).toLocaleString('id-ID')}` : 'Custom Price'}
                                         </span>
                                     </div>
                                     <span className="text-[10px] font-bold text-mentawaiMint bg-mentawaiDark px-2.5 py-1 rounded-full border border-white/5 uppercase tracking-wider">Secure</span>
@@ -262,7 +266,7 @@ const Detail = () => {
                                 <button type="submit" className="w-full bg-[#103D2E] hover:bg-mentawaiSage text-[#FAF8F5] font-extrabold text-sm uppercase tracking-widest py-4 rounded-2xl transition duration-300 shadow-lg shadow-[#103D2E]/10 flex justify-center items-center gap-2.5 transform hover:-translate-y-0.5 cursor-pointer">
                                     Lanjut ke Form Data <i className="fa-solid fa-arrow-right text-xs"></i>
                                 </button>
-                                
+
                                 <p className="text-center text-[10px] text-gray-400 mt-4"><i className="fa-solid fa-shield-halved text-mentawaiMint mr-1.5"></i> Slot terbatas. Amankan kursi Anda sekarang.</p>
                             </form>
                         </div>

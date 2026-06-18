@@ -8,11 +8,11 @@ const Booking = () => {
     const navigate = useNavigate();
 
     // <-- TARIK TOOLS TOAST & SETTINGS DARI JANTUNG
-    const { showToast, settings } = useGlobal(); 
+    const { showToast, settings } = useGlobal();
 
     const [step, setStep] = useState(1);
     const [invoice, setInvoice] = useState({ id: '', date: '' });
-    
+
     const [packages, setPackages] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -70,7 +70,8 @@ const Booking = () => {
     const formatRupiah = (angka) => 'Rp ' + (angka || 0).toLocaleString('id-ID');
 
     // FORMAT NOMOR WA OTOMATIS DARI SETTINGS
-    let adminPhone = settings.nomor_wa || '62895395002626';
+    let adminPhone = settings.nomor_wa || '628126774808';
+    adminPhone = adminPhone.replace(/\D/g, ''); // <-- TAMBAHAN: Bersihkan semua simbol & spasi
     if (adminPhone.startsWith('0')) {
         adminPhone = '62' + adminPhone.substring(1);
     }
@@ -233,7 +234,7 @@ const Booking = () => {
                                             <select id="form-paket" value={formData.paket} onChange={handleChange} className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-semibold text-sm appearance-none cursor-pointer">
                                                 {packages.map(pkg => (
                                                     <option key={pkg.id_paket} value={pkg.id_paket}>
-                                                        {pkg.nama_paket} ({formatRupiah(pkg.harga)})
+                                                        {pkg.nama_paket} {pkg.harga > 0 ? `(${formatRupiah(pkg.harga)})` : '(Flexible Price)'}
                                                     </option>
                                                 ))}
                                             </select>
@@ -246,7 +247,7 @@ const Booking = () => {
                                             <i className="fa-solid fa-users absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
                                             <select id="form-pax" value={formData.pax} onChange={handleChange} className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-semibold text-sm appearance-none cursor-pointer">
                                                 {[...Array(10).keys()].map(n => (
-                                                    <option key={n+1} value={n+1}>{n+1} Orang</option>
+                                                    <option key={n + 1} value={n + 1}>{n + 1} Orang</option>
                                                 ))}
                                                 <option value="11">Rombongan Besar</option>
                                             </select>
@@ -281,22 +282,23 @@ const Booking = () => {
                                 <div className="space-y-5">
                                     <div className="flex justify-between items-start gap-4">
                                         <div>
+                                            
                                             <p className="font-serif font-bold text-mentawaiDark text-base">{dataPaketTerpilih?.nama_paket}</p>
-                                            <p className="text-xs text-slate-500 mt-1">{formatRupiah(dataPaketTerpilih?.harga)} / pax</p>
+                                            <p className="text-xs text-slate-500 mt-1">{dataPaketTerpilih?.harga > 0 ? `${formatRupiah(dataPaketTerpilih.harga)} / pax` : 'Sesuai Kesepakatan'}</p>
                                         </div>
                                         <span className="font-bold text-mentawaiDark text-sm bg-mentawaiBone px-3 py-1 rounded-full border border-mentawaiDark/5">{formData.pax} Pax</span>
                                     </div>
                                     <div className="border-t border-dashed border-slate-200 pt-4 flex justify-between items-center text-xs font-medium text-slate-600">
                                         <span>Pajak & Konservasi</span>
-                                        <span className="text-mentawaiSage font-bold uppercase tracking-wide">Included / Gratis</span>
+                                        <span className="text-mentawaiSage font-bold uppercase tracking-wide">-</span>
                                     </div>
                                     <div className="border-t border-slate-100 pt-5 flex justify-between items-center">
                                         <span className="font-bold text-slate-400 text-xs uppercase tracking-wider">Total Pembayaran</span>
-                                        <span className="text-2xl font-black text-mentawaiDark font-serif">{formatRupiah(totalBiaya)}</span>
+                                        <span className="text-2xl font-black text-mentawaiDark font-serif">{totalBiaya > 0 ? formatRupiah(totalBiaya) : 'Menunggu Konfirmasi'}</span>
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <div className="bg-[#103D2E]/5 rounded-3xl p-8 border border-mentawaiDark/5">
                                 <h4 className="font-serif font-bold text-mentawaiDark text-base mb-2.5 flex items-center gap-2">
                                     <i className="fa-solid fa-headset text-mentawaiMint"></i> Panduan & Bantuan
@@ -348,7 +350,7 @@ const Booking = () => {
                             <div className="bg-[#FAF8F5] rounded-2xl p-6 border border-mentawaiDark/5">
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="font-bold text-slate-400 text-xs uppercase tracking-wider">Total Pembayaran</span>
-                                    <span className="font-black text-2xl text-mentawaiDark font-serif">{formatRupiah(totalBiaya)}</span>
+                                    <span className="font-black text-2xl text-mentawaiDark font-serif">{totalBiaya > 0 ? formatRupiah(totalBiaya) : 'Menunggu Konfirmasi'}</span>
                                 </div>
                                 <div className="text-xs text-gray-500 leading-relaxed text-center border-t border-slate-200/80 pt-4">
                                     Sistem pembayaran manual. Kirim pesanan untuk mendapatkan instruksi transfer resmi dari Admin.
@@ -376,7 +378,7 @@ const Booking = () => {
                         <div className="w-20 h-20 bg-mentawaiMint/15 text-mentawaiSage rounded-full flex items-center justify-center mx-auto text-4xl shadow-inner animate-pulse">
                             <i className="fa-solid fa-circle-check"></i>
                         </div>
-                        
+
                         <div className="space-y-2">
                             <h2 className="text-2xl font-serif font-semibold text-mentawaiDark">Registrasi Terkirim!</h2>
                             <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
@@ -385,9 +387,6 @@ const Booking = () => {
                         </div>
 
                         <div className="flex flex-col gap-3 pt-6">
-                            <button onClick={() => navigate('/admin')} className="bg-mentawaiDark hover:bg-mentawaiSage text-white font-extrabold py-3.5 rounded-xl transition shadow-md text-xs uppercase tracking-wider">
-                                Buka Admin Panel (Cek Leads)
-                            </button>
                             <button onClick={() => navigate('/')} className="bg-transparent border border-mentawaiDark/20 text-mentawaiDark font-extrabold py-3.5 rounded-xl transition text-xs uppercase tracking-wider">
                                 Kembali ke Beranda
                             </button>

@@ -67,8 +67,7 @@ const Footer = () => {
         <div className="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-white/40 gap-4">
             <p>&copy; {new Date().getFullYear()} {settings.brand_name || 'Mentawai Hantage'}. Crafted with love for the wild.</p>
             <div className="flex gap-6">
-                <a href="#" className="hover:text-white transition">Privacy Policy</a>
-                <a href="#" className="hover:text-white transition">Terms of Service</a>
+
             </div>
         </div>
     </footer>
