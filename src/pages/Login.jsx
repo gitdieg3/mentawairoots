@@ -49,7 +49,7 @@ const Login = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#2d4a3e] transition text-sm" 
-              placeholder="admin@mentawairoots.com" 
+              placeholder="" 
             />
           </div>
 
