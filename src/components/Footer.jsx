@@ -24,7 +24,7 @@ const Footer = () => {
                     </span>
                 </a>
                 <p className="text-white/60 text-sm leading-relaxed mb-6">
-                    {settings.brand_name || 'Mentawai Hantage'} adalah agen wisata lokal spesialis dalam memandu petualangan ekspedisi suku adat pedalaman Siberut, penjelajahan rimba tropis, dan surf charter di Kepulauan Mentawai.
+                    {settings.brand_name || 'Mentawai Hantage'}  Mentawairoots is a local travel agency specializing in guiding indigenous Siberut tribal expedition adventures, tropical jungle explorations, and surf charters in the Mentawai Islands.
                 </p>
                 <div className="flex gap-4">
                     {settings.facebook && <a href={settings.facebook} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-mentawaiMint hover:text-mentawaiDark flex items-center justify-center text-white transition"><i className="fa-brands fa-facebook-f"></i></a>}

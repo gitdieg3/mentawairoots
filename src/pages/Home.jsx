@@ -87,7 +87,7 @@ const Home = () => {
                         Where the Jungle <br /><span className="text-mentawaiMint italic font-medium">Meets the Wave.</span>
                     </h1>
                     <p className="text-white/80 text-base md:text-xl max-w-2xl mx-auto mb-10 font-light leading-relaxed">
-                        Tinggalkan jalur turis biasa. Jelajahi keindahan liar, budaya asli suku pedalaman tato tertua, dan ombak magis kepulauan Mentawai bersama pemandu lokal kami.
+                        Escape the ordinary. Immerse yourself in the deep jungle to discover ancient traditions, authentic tribal art, and the wild beauty of Mentawai alongside our expert local guides
                     </p>
                 </div>
 
