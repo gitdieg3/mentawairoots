@@ -53,11 +53,11 @@ const Footer = () => {
                     </li>
                     <li className="flex items-center gap-3">
                         <i className="fa-brands fa-whatsapp text-mentawaiMint text-base"></i>
-                        <span>{settings.nomor_wa || '+62 895-3950-02626'}</span>
+                        <span>{settings.nomor_wa || '+62 812-6774-808'}</span>
                     </li>
                     <li className="flex items-center gap-3">
                         <i className="fa-solid fa-envelope text-mentawaiMint text-base"></i>
-                        <span>{settings.email || 'hello@mentawaihantage.com'}</span>
+                        <span>{settings.email || 'mentawaitribebooking@gmail.com'}</span>
                     </li>
                 </ul>
             </div>
@@ -65,7 +65,7 @@ const Footer = () => {
 
         {/* Bottom Copyright */}
         <div className="max-w-7xl mx-auto pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-xs text-white/40 gap-4">
-            <p>&copy; {new Date().getFullYear()} {settings.brand_name || 'Mentawai Hantage'}. Crafted with love for the wild.</p>
+            <p>&copy; {new Date().getFullYear()} {settings.brand_name || 'Mentawai Roots'}. Crafted with love for the wild.</p>
             <div className="flex gap-6">
 
             </div>
