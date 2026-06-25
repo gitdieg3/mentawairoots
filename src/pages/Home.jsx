@@ -43,6 +43,36 @@ const Home = () => {
         fetchHomeData();
     }, []);
 
+    // TAMBAHAN: Komponen Animasi Angka Bergulir (Sangat Ringan)
+    const AnimatedNumber = ({ end, suffix = "", duration = 2000 }) => {
+        const [count, setCount] = useState(0);
+        const [isVisible, setIsVisible] = useState(false);
+        const ref = React.useRef(null);
+
+        useEffect(() => {
+            const observer = new IntersectionObserver(
+                ([entry]) => { if (entry.isIntersecting) setIsVisible(true); },
+                { threshold: 0.1 }
+            );
+            if (ref.current) observer.observe(ref.current);
+            return () => observer.disconnect();
+        }, []);
+
+        useEffect(() => {
+            if (!isVisible) return;
+            let startTime = null;
+            const animate = (currentTime) => {
+                if (!startTime) startTime = currentTime;
+                const progress = Math.min((currentTime - startTime) / duration, 1);
+                setCount(Math.floor(progress * end));
+                if (progress < 1) requestAnimationFrame(animate);
+            };
+            requestAnimationFrame(animate);
+        }, [isVisible, end, duration]);
+
+        return <span ref={ref}>{count}{suffix}</span>;
+    };
+
     const filteredPackages = activeCategory === 'All'
         ? packages
         : packages.filter(pkg => pkg.kategori === activeCategory);
@@ -185,10 +215,30 @@ const Home = () => {
             <section className="py-16 bg-white border-b border-mentawaiDark/5">
                 <div className="max-w-7xl mx-auto px-6">
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                        <div><h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">500+</h4><p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Adventurers Guided</p></div>
-                        <div><h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">12+</h4><p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Years in the Field</p></div>
-                        <div><h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">6</h4><p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Villages Partnered</p></div>
-                        <div><h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">98%</h4><p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Would Return</p></div>
+                        <div>
+                            <h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">
+                                <AnimatedNumber end={500} suffix="+" />
+                            </h4>
+                            <p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Adventurers Guided</p>
+                        </div>
+                        <div>
+                            <h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">
+                                <AnimatedNumber end={12} suffix="+" />
+                            </h4>
+                            <p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Years in the Field</p>
+                        </div>
+                        <div>
+                            <h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">
+                                <AnimatedNumber end={6} />
+                            </h4>
+                            <p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Villages Partnered</p>
+                        </div>
+                        <div>
+                            <h4 className="text-4xl md:text-5xl font-serif font-black text-mentawaiDark">
+                                <AnimatedNumber end={98} suffix="%" />
+                            </h4>
+                            <p className="text-xs text-mentawaiSage uppercase tracking-wider font-semibold mt-2">Would Return</p>
+                        </div>
                     </div>
                 </div>
             </section>

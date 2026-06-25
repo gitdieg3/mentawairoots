@@ -20,7 +20,7 @@ const AboutSection = ({ settings }) => {
                                 <span className="w-2.5 h-2.5 rounded-full bg-mentawaiMint"></span>
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-mentawaiMint">100% Native</span>
                             </div>
-                            <p className="text-xs text-white/80 leading-relaxed font-light">Dipandu langsung oleh putra daerah asli Mentawai yang menjaga tradisi turun-temurun hutan Siberut.</p>
+                            <p className="text-xs text-white/80 leading-relaxed font-light">Guided personally by a native of Mentawai who upholds the age-old traditions of the Siberut forest.</p>
                         </div>
                         <div className="absolute -top-10 -left-10 w-40 h-40 bg-mentawaiMint/10 rounded-full blur-3xl z-0"></div>
                     </div>
@@ -51,7 +51,7 @@ const AboutSection = ({ settings }) => {
                                 </div>
                                 <div>
                                     <h4 className="font-bold text-mentawaiDark text-sm mb-1">Ethical Travel</h4>
-                                    <p className="text-xs text-gray-500">Kunjungan yang menghargai adat, privasi, dan tidak mengubah tatanan hidup suku asli.</p>
+                                    <p className="text-xs text-gray-500">A visit that respects customs and privacy, and does not alter the indigenous tribe's way of life.</p>
                                 </div>
                             </div>
                             <div className="flex gap-4">
@@ -59,8 +59,8 @@ const AboutSection = ({ settings }) => {
                                     <i className="fa-solid fa-shield-halved text-sm"></i>
                                 </div>
                                 <div>
-                                    <h4 className="font-bold text-mentawaiDark text-sm mb-1">Keamanan Ekspedisi</h4>
-                                    <p className="text-xs text-gray-500">Peralatan trekking lengkap, obat-obatan, dan navigasi rimba berpengalaman.</p>
+                                    <h4 className="font-bold text-mentawaiDark text-sm mb-1">Shipment Security</h4>
+                                    <p className="text-xs text-gray-500">We prioritize standard safety procedures and will guide you in preparing your gear and personal essentials to ensure the expedition remains safe and comfortable.</p>
                                 </div>
                             </div>
                         </div>

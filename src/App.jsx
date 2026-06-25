@@ -10,6 +10,7 @@ import Detail from './pages/Detail';
 import Booking from './pages/Booking';
 import Login from './pages/Login';
 import Admin from './pages/Admin';
+import Reviews from './pages/Reviews';
 
 // ================= KOMPONEN PROTEKSI RUTE ADMIN =================
 const ProtectedRoute = ({ children }) => {
@@ -81,6 +82,7 @@ function App() {
                             <Route path="/detail" element={<Detail />} />
                             <Route path="/booking" element={<Booking />} />
                             <Route path="/login" element={<Login />} />
+                            <Route path="/reviews" element={<Reviews />} />
                             
                             {/* Rute Admin Sudah Dibungkus Gembok Keamanan */}
                             <Route path="/admin/*" element={

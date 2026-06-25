@@ -19,7 +19,7 @@ const Navbar = () => {
     if (adminPhone.startsWith('0')) adminPhone = '62' + adminPhone.substring(1);
 
     return (
-        <nav className="bg-[#FAF8F5]/90 backdrop-blur-md sticky top-0 z-50 px-6 py-4 transition-all duration-300 border-b border-mentawaiDark/5">
+        <nav className="bg-[#FAF8F5]/90 backdrop-blur-md fixed top-0 left-0 w-full z-50 px-6 py-4 transition-all duration-300 border-b border-mentawaiDark/5">
             <div className="max-w-7xl mx-auto flex justify-between items-center">
 
                 {/* Logo Brand Dinamis */}
@@ -42,6 +42,7 @@ const Navbar = () => {
                 <div className="hidden md:flex items-center gap-8 font-medium text-sm text-mentawaiDark/80">
                     <a href="/#packages" className="hover:text-mentawaiMint transition duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-mentawaiMint hover:after:w-full after:transition-all">Our Packages</a>
                     <a href="/#media-gallery" className="hover:text-mentawaiMint transition duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-mentawaiMint hover:after:w-full after:transition-all">Kegiatan & Media</a>
+                    <a href="/reviews" className="hover:text-mentawaiMint transition duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-mentawaiMint hover:after:w-full after:transition-all">Review</a>
                     <a href="/#about-us" className="hover:text-mentawaiMint transition duration-300 relative py-1 after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-mentawaiMint hover:after:w-full after:transition-all">Tentang Kami</a>
                 </div>
 
@@ -60,6 +61,7 @@ const Navbar = () => {
                     <a href="/#packages" onClick={() => setIsOpen(false)} className="font-bold text-mentawaiDark border-b border-mentawaiDark/5 pb-2">Our Packages</a>
                     <a href="/#media-gallery" onClick={() => setIsOpen(false)} className="font-bold text-mentawaiDark border-b border-mentawaiDark/5 pb-2">Kegiatan & Media</a>
                     <a href="/#about-us" onClick={() => setIsOpen(false)} className="font-bold text-mentawaiDark border-b border-mentawaiDark/5 pb-2">Tentang Kami</a>
+                    <a href="/reviews" onClick={() => setIsOpen(false)} className="font-bold text-mentawaiDark border-b border-mentawaiDark/5 pb-2">Review</a>
                     <a href={`https://wa.me/${adminPhone}`} target="_blank" rel="noreferrer" className="mt-2 bg-mentawaiDark text-center text-white py-3 rounded-xl font-bold uppercase tracking-wider text-xs">
                         <i className="fa-brands fa-whatsapp text-mentawaiMint mr-2"></i> Hubungi Admin
                     </a>

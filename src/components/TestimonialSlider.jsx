@@ -1,97 +1,193 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 const TestimonialSlider = ({ testimonials, loading }) => {
-    const [testiPage, setTestiPage] = useState(0);
-    const [itemsPerView, setItemsPerView] = useState(3);
+    const [activeFilter, setActiveFilter] = useState('ALL');
+    const sliderRef = useRef(null);
 
-    // Deteksi ukuran layar otomatis
+    // Fungsi bantuan untuk mengambil inisial nama
+    const getInitials = (name) => {
+        if (!name) return '?';
+        const parts = name.split(' ');
+        let initials = parts[0][0];
+        if (parts.length > 1) {
+            initials += parts[parts.length - 1][0];
+        }
+        return initials.toUpperCase();
+    };
+
+    // Fungsi menentukan kategori dari isi ulasan
+    const getTripCategory = (text) => {
+        const lowerText = (text || '').toLowerCase();
+        if (lowerText.includes('ombak') || lowerText.includes('surf')) {
+            return { id: 'SURF', label: 'SURF CAMP', color: 'bg-blue-50 text-blue-600' };
+        }
+        return { id: 'CULTURAL', label: 'CULTURAL TRIP', color: 'bg-mentawaiMint/15 text-mentawaiSage' };
+    };
+
+    // --- LOGIKA PERHITUNGAN METRIK RATING ---
+    const totalReviews = testimonials.length;
+
+    const averageRating = totalReviews > 0
+        ? (testimonials.reduce((acc, curr) => acc + (parseInt(curr.rating) || 5), 0) / totalReviews).toFixed(1)
+        : "0.0";
+
+    const ratingCounts = { 5: 0, 4: 0, 3: 0 };
+    testimonials.forEach(testi => {
+        const r = parseInt(testi.rating) || 5;
+        if (r >= 5) ratingCounts[5]++;
+        else if (r === 4) ratingCounts[4]++;
+        else ratingCounts[3]++;
+    });
+
+    const getPercentage = (count) => totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
+
+    // --- LOGIKA FILTER DATA ---
+    const filteredTestimonials = testimonials.filter(testi => {
+        if (activeFilter === 'ALL') return true;
+        const cat = getTripCategory(testi.ulasan).id;
+        return cat === activeFilter;
+    });
+
+    // --- LOGIKA AUTO SLIDER ---
     useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth >= 1024) setItemsPerView(3);
-            else if (window.innerWidth >= 768) setItemsPerView(2);
-            else setItemsPerView(1);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
+        if (filteredTestimonials.length <= 1) return;
 
-    const totalTestiPages = Math.ceil(testimonials.length / itemsPerView);
-
-    // Auto-Slide Otomatis setiap 5 Detik
-    useEffect(() => {
-        if (totalTestiPages <= 1) return;
         const interval = setInterval(() => {
-            setTestiPage((prev) => (prev >= totalTestiPages - 1 ? 0 : prev + 1));
-        }, 5000);
+            if (sliderRef.current) {
+                const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+
+                // Cek apakah slider sudah mentok di ujung kanan
+                const isEnd = Math.ceil(scrollLeft + clientWidth) >= scrollWidth;
+
+                if (isEnd) {
+                    // Kalau mentok, balik ke awal dengan mulus
+                    sliderRef.current.scrollTo({ left: 0, behavior: 'smooth' });
+                } else {
+                    // Geser sejauh ukuran 1 kartu
+                    const cardWidth = sliderRef.current.children[0].clientWidth;
+                    // Ditambah gap (sekitar 32px untuk gap-8)
+                    sliderRef.current.scrollBy({ left: cardWidth + 32, behavior: 'smooth' });
+                }
+            }
+        }, 3500); // Waktu auto-slide: 3.5 detik
+
+        // Bersihkan interval saat komponen dibongkar atau filter berubah
         return () => clearInterval(interval);
-    }, [totalTestiPages]);
+    }, [filteredTestimonials.length, activeFilter]);
 
     return (
-        <section id="testimoni" className="py-24 px-6 bg-[#0B2B20] text-white">
+        <section className="py-24 px-6 bg-[#FAF8F5] relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-16">
-                    <p className="text-mentawaiMint font-bold text-xs uppercase tracking-widest mb-3">Authentic Voices</p>
-                    <h2 className="text-4xl md:text-5xl font-serif text-white font-semibold">What Our Travelers Say</h2>
-                    <div className="w-16 h-1 bg-mentawaiMint mx-auto mt-6 rounded-full"></div>
-                </div>
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-black text-mentawaiDark mb-6">
+                        Testimoni
+                    </h1>
 
-                {loading ? (
-                    <div className="text-center text-mentawaiMint font-bold animate-pulse">
-                        Memuat Ulasan Pelancong...
-                    </div>
-                ) : testimonials.length === 0 ? (
-                    <div className="text-center text-white/50">
-                        Belum ada ulasan yang ditampilkan. Jadilah yang pertama memberikan ulasan!
-                    </div>
-                ) : (
-                    <div className="relative w-full">
-                        {/* Track Slider */}
-                        <div className="overflow-hidden w-full -mx-4 px-4">
-                            <div
-                                className="flex transition-transform duration-1000 ease-in-out"
-                                style={{ transform: `translateX(-${testiPage * 100}%)` }}
-                            >
-                                {testimonials.map((testi) => (
-                                    <div key={testi.id} className="w-full md:w-1/2 lg:w-1/3 flex-shrink-0 p-4">
-                                        <div className="bg-white/[0.03] backdrop-blur-md p-8 rounded-3xl border border-white/5 relative hover:-translate-y-2 transition duration-300 h-full flex flex-col group">
-                                            <i className="fa-solid fa-quote-right text-5xl text-mentawaiMint absolute top-6 right-6 opacity-10 group-hover:opacity-20 transition-opacity"></i>
-                                            <div className="flex text-mentawaiMint text-xs mb-6 gap-1">
-                                                {[...Array(parseInt(testi.rating) || 5)].map((_, i) => (
-                                                    <i key={i} className="fa-solid fa-star"></i>
-                                                ))}
-                                            </div>
-                                            <p className="text-white/80 italic mb-8 leading-relaxed text-sm flex-grow">"{testi.ulasan}"</p>
-                                            <div className="flex items-center gap-4 border-t border-white/5 pt-6 mt-auto">
-                                                <img
-                                                    src={testi.foto || `https://ui-avatars.com/api/?name=${testi.nama.replace(' ', '+')}&background=59C394&color=0B2B20`}
-                                                    className="w-12 h-12 rounded-full object-cover border-2 border-mentawaiMint"
-                                                    alt="Reviewer"
-                                                />
-                                                <div>
-                                                    <h4 className="font-bold text-white text-sm">{testi.nama}</h4>
-                                                    <span className="text-xs text-white/40">{testi.asal}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
+                </div>
+                {/* 1. KOTAK METRIK RATING (DASHBOARD ATAS) */}
+                <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-mentawaiDark/5 mb-12 flex flex-col md:flex-row items-center gap-12">
+                    {/* Kiri: Rata-rata Angka & Bintang Dinamis */}
+                    <div className="text-center md:w-1/3 md:border-r border-gray-100 md:pr-12">
+                        {/* Ini angka gedenya yang tadi hilang */}
+                        <h2 className="text-6xl font-serif font-black text-mentawaiDark mb-2">{averageRating}</h2>
+
+                        {/* Ini logika bintang dinamisnya */}
+                        <div className="flex justify-center text-mentawaiGold text-xl gap-1 mb-2">
+                            {[...Array(Math.floor(parseFloat(averageRating) || 0))].map((_, i) => (
+                                <i key={`full-${i}`} className="fa-solid fa-star"></i>
+                            ))}
+                            {(parseFloat(averageRating) || 0) % 1 >= 0.5 && (
+                                <i className="fa-solid fa-star-half-stroke"></i>
+                            )}
+                            {[...Array(5 - Math.floor(parseFloat(averageRating) || 0) - ((parseFloat(averageRating) || 0) % 1 >= 0.5 ? 1 : 0))].map((_, i) => (
+                                <i key={`empty-${i}`} className="fa-regular fa-star"></i>
+                            ))}
                         </div>
 
-                        {/* Navigasi Titik (Dots) di Bawah Slider */}
-                        {totalTestiPages > 1 && (
-                            <div className="flex justify-center items-center gap-3 mt-12">
-                                {[...Array(totalTestiPages)].map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => setTestiPage(i)}
-                                        className={`transition-all duration-500 rounded-full ${testiPage === i ? 'w-8 h-2.5 bg-mentawaiMint shadow-[0_0_10px_rgba(89,195,148,0.5)]' : 'w-2.5 h-2.5 bg-white/20 hover:bg-white/40'}`}
-                                        aria-label={`Go to slide ${i + 1}`}
-                                    ></button>
-                                ))}
+                        {/* Ini teks kecil di bawahnya */}
+                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
+                            Average Rating ({totalReviews} Reviews)
+                        </p>
+                    </div>
+
+                    <div className="md:w-2/3 w-full flex flex-col gap-4">
+                        <p className="text-xs font-bold text-mentawaiDark uppercase tracking-widest mb-1">Metrik Kepuasan Pelancong</p>
+                        {[5, 4, 3].map((star) => (
+                            <div key={star} className="flex items-center gap-4">
+                                <div className="text-xs text-gray-500 w-16 text-right leading-tight">
+                                    <span className="font-bold">{star}</span><br /><span className="text-[9px]">Bintang</span>
+                                </div>
+                                <div className="flex-grow h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full bg-mentawaiMint rounded-full transition-all duration-1000"
+                                        style={{ width: `${getPercentage(ratingCounts[star])}%` }}
+                                    ></div>
+                                </div>
+                                <div className="text-xs text-gray-500 w-10 text-right">
+                                    {getPercentage(ratingCounts[star])}%
+                                </div>
                             </div>
-                        )}
+                        ))}
+                    </div>
+                </div>
+
+                {/* 2. TOMBOL FILTER */}
+
+
+                <div className="flex justify-center mb-12">
+                    <a
+                        href="/reviews"
+                        className="bg-mentawaiDark hover:bg-mentawaiSage text-mentawaiMint hover:text-white px-8 py-3.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg shadow-mentawaiDark/20 hover:shadow-xl transition-all duration-300 flex items-center gap-2 transform hover:-translate-y-0.5"
+                    >
+                        READ ALL REVIEWS <i className="fa-solid fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                {/* 3. DAFTAR KARTU TESTIMONI (AUTO SLIDER) */}
+                {loading ? (
+                    <div className="flex justify-center items-center py-10 text-mentawaiMint font-bold animate-pulse">Memuat cerita petualang...</div>
+                ) : filteredTestimonials.length === 0 ? (
+                    <div className="text-center text-gray-400 py-10">Belum ada ulasan untuk kategori ini.</div>
+                ) : (
+                    // KONTENER SLIDER
+                    <div
+                        ref={sliderRef}
+                        className="flex overflow-x-auto gap-8 pb-8 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden"
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                    >
+                        {filteredTestimonials.map((testi) => {
+                            const category = getTripCategory(testi.ulasan);
+                            const ratingCount = parseInt(testi.rating) || 5;
+
+                            return (
+                                <div
+                                    key={testi.id}
+                                    className="w-[85vw] md:w-[45vw] lg:w-[30vw] flex-none snap-center bg-white p-8 rounded-3xl border border-mentawaiDark/5 shadow-sm hover:shadow-xl transition duration-300 flex flex-col justify-between group"
+                                >
+                                    <div>
+                                        <div className="flex justify-between items-start mb-6">
+                                            <div className="flex text-mentawaiGold text-xs gap-1">
+                                                {[...Array(ratingCount)].map((_, i) => <i key={i} className="fa-solid fa-star"></i>)}
+                                                {[...Array(5 - ratingCount)].map((_, i) => <i key={i + ratingCount} className="fa-regular fa-star"></i>)}
+                                            </div>
+                                            <span className={`${category.color} text-[9px] font-black uppercase tracking-wider px-2.5 py-1 rounded`}>
+                                                {category.label}
+                                            </span>
+                                        </div>
+                                        <p className="text-slate-600 font-light leading-relaxed text-sm italic mb-8">"{testi.ulasan}"</p>
+                                    </div>
+                                    <div className="flex items-center gap-4 border-t border-slate-100 pt-6 mt-auto">
+                                        <div className="w-12 h-12 rounded-full bg-[#0B2B20] text-mentawaiMint flex items-center justify-center font-serif font-bold text-lg shadow-inner flex-shrink-0">
+                                            {getInitials(testi.nama)}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-slate-800 text-sm truncate w-32 md:w-48">{testi.nama}</h4>
+                                            <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">{testi.asal}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>
