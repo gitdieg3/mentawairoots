@@ -82,7 +82,7 @@ const Detail = () => {
             <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
                 <div className="text-center text-mentawaiDark font-bold animate-pulse text-xl font-serif">
                     <i className="fa-solid fa-compass fa-spin text-4xl mb-4 block text-mentawaiMint"></i>
-                    Mempersiapkan Rute Ekspedisi Anda...
+                    Preparing Your Expedition Route...
                 </div>
             </div>
         );
@@ -112,7 +112,7 @@ const Detail = () => {
 
             <div className="max-w-7xl mx-auto px-6 py-12">
                 <a href="/" className="inline-flex items-center gap-2 text-mentawaiSage hover:text-mentawaiMint font-bold text-xs uppercase tracking-wider transition mb-8">
-                    <i className="fa-solid fa-arrow-left"></i> Kembali ke Katalog
+                    <i className="fa-solid fa-arrow-left"></i> Return to Catalog
                 </a>
 
                 {/* HEADER PAKET */}
@@ -189,7 +189,7 @@ const Detail = () => {
 
                             <div className="space-y-5">
                                 {itineraries.length === 0 ? (
-                                    <p className="text-gray-500 italic text-sm">Jadwal itinerary belum tersedia untuk paket ini.</p>
+                                    <p className="text-gray-500 italic text-sm">The itinerary schedule is not yet available for this package.</p>
                                 ) : (
                                     itineraries.map((itin, idx) => (
                                         <details key={itin.id_itinerary} className="group bg-[#FAF8F5] rounded-2xl border border-mentawaiDark/5" open={idx === 0}>
@@ -226,7 +226,7 @@ const Detail = () => {
 
                             <form onSubmit={handleBookingSubmit}>
                                 <div className="mb-5">
-                                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Pilih Tanggal Trip</label>
+                                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Select Trip Date</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <i className="fa-regular fa-calendar text-mentawaiSage"></i>
@@ -236,16 +236,16 @@ const Detail = () => {
                                 </div>
 
                                 <div className="mb-6">
-                                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Jumlah Peserta (Pax)</label>
+                                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-2">Number of participants (Pax)</label>
                                     <div className="relative">
                                         <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                                             <i className="fa-solid fa-user-group text-mentawaiSage"></i>
                                         </div>
                                         <select value={pax} onChange={(e) => setPax(Number(e.target.value))} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition text-sm appearance-none cursor-pointer">
                                             {[...Array(10).keys()].map(n => (
-                                                <option key={n + 1} value={n + 1}>{n + 1} Orang</option>
+                                                <option key={n + 1} value={n + 1}>{n + 1} Person</option>
                                             ))}
-                                            <option value="11">Rombongan Besar (Hubungi Kami)</option>
+                                            <option value="11">Large Group (About us)</option>
                                         </select>
                                         <div className="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none">
                                             <i className="fa-solid fa-chevron-down text-gray-400 text-xs"></i>
@@ -255,7 +255,7 @@ const Detail = () => {
 
                                 <div className="mb-8 p-4 bg-[#FAF8F5] border border-mentawaiDark/5 rounded-2xl flex justify-between items-center">
                                     <div>
-                                        <span className="text-[9px] text-gray-400 font-bold block uppercase tracking-wider mb-0.5">Estimasi Total Biaya</span>
+                                        <span className="text-[9px] text-gray-400 font-bold block uppercase tracking-wider mb-0.5">Estimated Total Cost</span>
                                         <span className="font-extrabold text-mentawaiSage text-xl">
                                             {packageData.harga > 0 ? `Rp ${(packageData.harga * pax).toLocaleString('id-ID')}` : 'Custom Price'}
                                         </span>
@@ -264,10 +264,10 @@ const Detail = () => {
                                 </div>
 
                                 <button type="submit" className="w-full bg-[#103D2E] hover:bg-mentawaiSage text-[#FAF8F5] font-extrabold text-sm uppercase tracking-widest py-4 rounded-2xl transition duration-300 shadow-lg shadow-[#103D2E]/10 flex justify-center items-center gap-2.5 transform hover:-translate-y-0.5 cursor-pointer">
-                                    Lanjut ke Form Data <i className="fa-solid fa-arrow-right text-xs"></i>
+                                    Continue to Data Form <i className="fa-solid fa-arrow-right text-xs"></i>
                                 </button>
 
-                                <p className="text-center text-[10px] text-gray-400 mt-4"><i className="fa-solid fa-shield-halved text-mentawaiMint mr-1.5"></i> Slot terbatas. Amankan kursi Anda sekarang.</p>
+                                <p className="text-center text-[10px] text-gray-400 mt-4"><i className="fa-solid fa-shield-halved text-mentawaiMint mr-1.5"></i> Slots are limited. Secure your seat now.</p>
                             </form>
                         </div>
                     </div>

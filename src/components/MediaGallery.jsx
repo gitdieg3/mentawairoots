@@ -29,15 +29,15 @@ const MediaGallery = ({ mediaData }) => {
             <div className="max-w-7xl mx-auto relative z-10">
                 <div className="text-center mb-16">
                     <p className="text-mentawaiMint font-bold text-xs uppercase tracking-widest mb-3">Live the Experience</p>
-                    <h2 className="text-4xl md:text-5xl font-serif font-semibold mb-4 text-white">Dokumentasi & Media Kegiatan</h2>
-                    <p className="text-white/60 max-w-2xl mx-auto text-sm md:text-base">Melihat lebih dekat perjalanan sesungguhnya. Klik tab di bawah untuk melihat foto orisinal atau cuplikan video sinematik petualang kami.</p>
+                    <h2 className="text-4xl md:text-5xl font-serif font-semibold mb-4 text-white">Activity Documentation & Media</h2>
+                    <p className="text-white/60 max-w-2xl mx-auto text-sm md:text-base">Take a closer look at the actual journey. Click the tabs below to see original photos or cinematic video footage of our adventures.</p>
 
                     <div className="flex justify-center mt-10 gap-3">
                         <button onClick={() => setActiveTab('photos')} className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 flex items-center gap-2 ${activeTab === 'photos' ? 'bg-mentawaiMint text-mentawaiDark shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}>
-                            <i className="fa-solid fa-images text-sm"></i> Foto Kegiatan ({photos.length})
+                            <i className="fa-solid fa-images text-sm"></i> Activity Photos ({photos.length})
                         </button>
                         <button onClick={() => setActiveTab('videos')} className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 flex items-center gap-2 ${activeTab === 'videos' ? 'bg-mentawaiMint text-mentawaiDark shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}>
-                            <i className="fa-solid fa-circle-play text-sm"></i> Video Sinematik ({videos.length})
+                            <i className="fa-solid fa-circle-play text-sm"></i> Cinematic Video ({videos.length})
                         </button>
                     </div>
                 </div>
@@ -45,7 +45,7 @@ const MediaGallery = ({ mediaData }) => {
                 {activeTab === 'photos' && (
                     <div className="animate-fade-in">
                         {photos.length === 0 ? (
-                            <p className="text-center text-white/50 py-10">Belum ada foto dokumentasi yang diunggah.</p>
+                            <p className="text-center text-white/50 py-10">No documentation photos have been uploaded yet.</p>
                         ) : (
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                                 {photos.map((photo) => (
@@ -67,7 +67,7 @@ const MediaGallery = ({ mediaData }) => {
                 {activeTab === 'videos' && (
                     <div className="animate-fade-in">
                         {videos.length === 0 ? (
-                            <p className="text-center text-white/50 py-10">Belum ada video dokumentasi yang diunggah.</p>
+                            <p className="text-center text-white/50 py-10">No documentation photos have been uploaded yet.</p>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 {videos.map((video) => (

@@ -38,8 +38,8 @@ const Footer = () => {
                     <ul className="space-y-3.5 text-sm">
                         <li><a href="/" className="hover:text-mentawaiMint transition duration-300">Home</a></li>
                         <li><a href="/#packages" className="hover:text-mentawaiMint transition duration-300">Our Packages</a></li>
-                        <li><a href="/#media-gallery" className="hover:text-mentawaiMint transition duration-300">Kegiatan & Media</a></li>
-                        <li><a href="/#about-us" className="hover:text-mentawaiMint transition duration-300">Tentang Kami</a></li>
+                        <li><a href="/#media-gallery" className="hover:text-mentawaiMint transition duration-300">Activities & Media</a></li>
+                        <li><a href="/#about-us" className="hover:text-mentawaiMint transition duration-300">About us</a></li>
                     </ul>
                 </div>
 

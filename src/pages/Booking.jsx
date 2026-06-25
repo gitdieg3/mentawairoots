@@ -169,15 +169,15 @@ const Booking = () => {
 
                         <div className="z-10 flex flex-col items-center">
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-md transition-all border ${step >= 1 ? 'bg-mentawaiDark text-mentawaiMint border-white/10' : 'bg-gray-100 text-gray-400 border-gray-200'}`}>1</div>
-                            <span className={`text-[10px] font-bold uppercase tracking-widest mt-2.5 ${step >= 1 ? 'text-mentawaiDark' : 'text-gray-400'}`}>Isi Data</span>
+                            <span className={`text-[10px] font-bold uppercase tracking-widest mt-2.5 ${step >= 1 ? 'text-mentawaiDark' : 'text-gray-400'}`}>Fill in Data</span>
                         </div>
                         <div className="z-10 flex flex-col items-center">
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-md transition-all border ${step >= 2 ? 'bg-mentawaiDark text-mentawaiMint border-white/10' : 'bg-gray-100 text-gray-400 border-gray-200'}`}>2</div>
-                            <span className={`text-[10px] font-bold uppercase tracking-widest mt-2.5 ${step >= 2 ? 'text-mentawaiDark' : 'text-gray-400'}`}>Konfirmasi</span>
+                            <span className={`text-[10px] font-bold uppercase tracking-widest mt-2.5 ${step >= 2 ? 'text-mentawaiDark' : 'text-gray-400'}`}>Confirmation</span>
                         </div>
                         <div className="z-10 flex flex-col items-center">
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shadow-md transition-all border ${step >= 3 ? 'bg-mentawaiDark text-mentawaiMint border-white/10' : 'bg-gray-100 text-gray-400 border-gray-200'}`}>3</div>
-                            <span className={`text-[10px] font-bold uppercase tracking-widest mt-2.5 ${step >= 3 ? 'text-mentawaiDark' : 'text-gray-400'}`}>Selesai</span>
+                            <span className={`text-[10px] font-bold uppercase tracking-widest mt-2.5 ${step >= 3 ? 'text-mentawaiDark' : 'text-gray-400'}`}>Finished</span>
                         </div>
                     </div>
                 </div>
@@ -188,20 +188,20 @@ const Booking = () => {
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 animate-fade-in">
                         <div className="lg:col-span-2 bg-white rounded-3xl p-8 md:p-10 shadow-sm border border-mentawaiDark/5">
                             <h2 className="text-3xl font-serif font-semibold text-mentawaiDark mb-8 flex items-center gap-3">
-                                <i className="fa-solid fa-user-pen text-mentawaiMint text-2xl"></i> Registrasi Ekspedisi
+                                <i className="fa-solid fa-user-pen text-mentawaiMint text-2xl"></i> Expedition Registration
                             </h2>
 
                             <form onSubmit={prosesKeStep2} className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nama Lengkap (Sesuai ID) <span className="text-red-500">*</span></label>
+                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Full name (Sesuai ID) <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
                                             <input type="text" id="form-nama" value={formData.nama} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Contoh: Aman Silaing" />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Nomor WhatsApp Aktif <span className="text-red-500">*</span></label>
+                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Active WhatsApp Number <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-brands fa-whatsapp absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage text-base"></i>
                                             <input type="tel" id="form-kontak" value={formData.kontak} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Contoh: 08123456789" />
@@ -211,14 +211,14 @@ const Booking = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Alamat Email <span className="text-red-500">*</span></label>
+                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Email address <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
                                             <input type="email" id="form-email" value={formData.email} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Contoh: explorer@domain.com" />
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Tanggal Keberangkatan <span className="text-red-500">*</span></label>
+                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Departure Date <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-regular fa-calendar absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
                                             <input type="date" id="form-tanggal" value={formData.tanggal} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm [color-scheme:light]" />
@@ -228,7 +228,7 @@ const Booking = () => {
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Paket Wisata Terpilih</label>
+                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Selected Tour Packages</label>
                                         <div className="relative">
                                             <i className="fa-solid fa-map-location-dot absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
                                             <select id="form-paket" value={formData.paket} onChange={handleChange} className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-semibold text-sm appearance-none cursor-pointer">
@@ -242,14 +242,14 @@ const Booking = () => {
                                         </div>
                                     </div>
                                     <div>
-                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Jumlah Peserta (Pax) <span className="text-red-500">*</span></label>
+                                        <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Number of participants (Pax) <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-solid fa-users absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
                                             <select id="form-pax" value={formData.pax} onChange={handleChange} className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-semibold text-sm appearance-none cursor-pointer">
                                                 {[...Array(10).keys()].map(n => (
                                                     <option key={n + 1} value={n + 1}>{n + 1} Orang</option>
                                                 ))}
-                                                <option value="11">Rombongan Besar</option>
+                                                <option value="11">Large Group</option>
                                             </select>
                                             <i className="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none text-xs"></i>
                                         </div>
@@ -257,19 +257,19 @@ const Booking = () => {
                                 </div>
 
                                 <div>
-                                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Catatan Khusus (Opsional)</label>
-                                    <textarea id="form-catatan" value={formData.catatan} onChange={handleChange} rows="3" className="w-full p-4 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Contoh: Memiliki riwayat medis tertentu, alergi makanan, dll..."></textarea>
+                                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Special Notes (Opsional)</label>
+                                    <textarea id="form-catatan" value={formData.catatan} onChange={handleChange} rows="3" className="w-full p-4 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Examples: Having certain medical history, food allergies, etc..."></textarea>
                                 </div>
 
                                 <div className="flex items-start gap-3 bg-[#103D2E]/5 p-5 rounded-2xl border border-mentawaiDark/5">
                                     <input type="checkbox" id="syarat-ketentuan" required className="mt-1 w-4 h-4 text-mentawaiSage focus:ring-mentawaiMint border-slate-300 rounded accent-mentawaiSage" />
                                     <label htmlFor="syarat-ketentuan" className="text-xs text-slate-600 leading-relaxed font-medium">
-                                        Saya menyetujui seluruh <span className="text-mentawaiDark font-bold underline cursor-pointer">Syarat & Ketentuan</span> dari {settings.brand_name || 'Mentawai Hantage'}.
+                                        I agree throughout <span className="text-mentawaiDark font-bold underline cursor-pointer">Terms & Conditions</span> dari {settings.brand_name || 'Mentawai Hantage'}.
                                     </label>
                                 </div>
 
                                 <button type="submit" className="w-full bg-[#103D2E] hover:bg-mentawaiSage text-white font-extrabold text-sm uppercase tracking-widest py-4 rounded-2xl transition duration-300 shadow-lg shadow-[#103D2E]/10 flex justify-center items-center gap-2.5 transform hover:-translate-y-0.5 cursor-pointer">
-                                    Lanjut ke Konfirmasi <i className="fa-solid fa-arrow-right text-xs"></i>
+                                    Continue to Confirmation <i className="fa-solid fa-arrow-right text-xs"></i>
                                 </button>
                             </form>
                         </div>
@@ -277,37 +277,37 @@ const Booking = () => {
                         <div className="space-y-6">
                             <div className="bg-white rounded-3xl p-8 shadow-sm border border-mentawaiDark/5">
                                 <h3 className="text-sm font-bold text-mentawaiDark mb-5 pb-3 border-b border-mentawaiDark/5 uppercase tracking-wider flex items-center gap-2.5">
-                                    <i className="fa-solid fa-receipt text-mentawaiMint"></i> Rincian Ekspedisi
+                                    <i className="fa-solid fa-receipt text-mentawaiMint"></i> Expedition Details
                                 </h3>
                                 <div className="space-y-5">
                                     <div className="flex justify-between items-start gap-4">
                                         <div>
-                                            
+
                                             <p className="font-serif font-bold text-mentawaiDark text-base">{dataPaketTerpilih?.nama_paket}</p>
                                             <p className="text-xs text-slate-500 mt-1">{dataPaketTerpilih?.harga > 0 ? `${formatRupiah(dataPaketTerpilih.harga)} / pax` : 'Sesuai Kesepakatan'}</p>
                                         </div>
                                         <span className="font-bold text-mentawaiDark text-sm bg-mentawaiBone px-3 py-1 rounded-full border border-mentawaiDark/5">{formData.pax} Pax</span>
                                     </div>
                                     <div className="border-t border-dashed border-slate-200 pt-4 flex justify-between items-center text-xs font-medium text-slate-600">
-                                        <span>Pajak & Konservasi</span>
+                                        <span>Tax & Conservation</span>
                                         <span className="text-mentawaiSage font-bold uppercase tracking-wide">-</span>
                                     </div>
                                     <div className="border-t border-slate-100 pt-5 flex justify-between items-center">
-                                        <span className="font-bold text-slate-400 text-xs uppercase tracking-wider">Total Pembayaran</span>
-                                        <span className="text-2xl font-black text-mentawaiDark font-serif">{totalBiaya > 0 ? formatRupiah(totalBiaya) : 'Menunggu Konfirmasi'}</span>
+                                        <span className="font-bold text-slate-400 text-xs uppercase tracking-wider">Total payment</span>
+                                        <span className="text-2xl font-black text-mentawaiDark font-serif">{totalBiaya > 0 ? formatRupiah(totalBiaya) : 'Waiting for Confirmation'}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="bg-[#103D2E]/5 rounded-3xl p-8 border border-mentawaiDark/5">
                                 <h4 className="font-serif font-bold text-mentawaiDark text-base mb-2.5 flex items-center gap-2">
-                                    <i className="fa-solid fa-headset text-mentawaiMint"></i> Panduan & Bantuan
+                                    <i className="fa-solid fa-headset text-mentawaiMint"></i> Guide & Help
                                 </h4>
                                 <p className="text-xs text-gray-500 leading-relaxed mb-5">
-                                    Mengalami kesulitan atau butuh penyesuaian khusus? Hubungi tim lokal kami.
+                                    Having trouble or needing helpuaian special? Contact our local team.
                                 </p>
                                 <a href={`https://wa.me/${adminPhone}`} target="_blank" rel="noreferrer" className="block text-center bg-white hover:bg-mentawaiDark hover:text-white text-mentawaiDark font-bold text-xs uppercase tracking-wider py-3.5 px-4 rounded-xl border border-mentawaiDark/10 shadow-sm transition">
-                                    <i className="fa-brands fa-whatsapp text-sm mr-1.5 text-mentawaiMint"></i> Hubungi Tim Lokal
+                                    <i className="fa-brands fa-whatsapp text-sm mr-1.5 text-mentawaiMint"></i> Contact the Local Team
                                 </a>
                             </div>
                         </div>
@@ -317,43 +317,43 @@ const Booking = () => {
                 {step === 2 && (
                     <div className="max-w-2xl mx-auto bg-white rounded-3xl overflow-hidden shadow-2xl border border-mentawaiDark/5 animate-fade-in">
                         <div className="bg-[#0B2B20] text-white p-8 text-center relative border-b border-white/5">
-                            <p className="text-[10px] text-mentawaiMint uppercase tracking-widest mb-1 font-bold">Nota Ekspedisi Sementara</p>
+                            <p className="text-[10px] text-mentawaiMint uppercase tracking-widest mb-1 font-bold">Temporary Expedition Note</p>
                             <h2 className="text-3xl font-serif font-semibold">{invoice.id}</h2>
-                            <p className="text-xs text-white/50 mt-1">Dibuat pada {invoice.date}</p>
+                            <p className="text-xs text-white/50 mt-1">Made in {invoice.date}</p>
                         </div>
 
                         <div className="p-8 space-y-8">
                             <div>
                                 <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-4 border-b border-slate-100 pb-1.5">Detail Pemesan</h3>
                                 <div className="grid grid-cols-2 gap-y-2.5 text-sm">
-                                    <span className="text-slate-500 font-light">Nama Lengkap</span>
+                                    <span className="text-slate-500 font-light">Full name</span>
                                     <span className="font-bold text-mentawaiDark text-right">{formData.nama}</span>
-                                    <span className="text-slate-500 font-light">WhatsApp / Kontak</span>
+                                    <span className="text-slate-500 font-light">WhatsApp / Contacts</span>
                                     <span className="font-bold text-mentawaiDark text-right">{formData.kontak}</span>
-                                    <span className="text-slate-500 font-light">Alamat Email</span>
+                                    <span className="text-slate-500 font-light">Email address</span>
                                     <span className="font-bold text-mentawaiDark text-right">{formData.email}</span>
                                 </div>
                             </div>
 
                             <div>
-                                <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-4 border-b border-slate-100 pb-1.5">Rincian Perjalanan</h3>
+                                <h3 className="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-4 border-b border-slate-100 pb-1.5">Travel Details</h3>
                                 <div className="grid grid-cols-2 gap-y-2.5 text-sm">
-                                    <span className="text-slate-500 font-light">Paket Wisata</span>
+                                    <span className="text-slate-500 font-light">Tour Packages</span>
                                     <span className="font-bold text-mentawaiDark text-right text-xs">{dataPaketTerpilih?.nama_paket}</span>
-                                    <span className="text-slate-500 font-light">Tanggal Trip</span>
+                                    <span className="text-slate-500 font-light">Trip Date</span>
                                     <span className="font-bold text-mentawaiDark text-right">{formData.tanggal}</span>
-                                    <span className="text-slate-500 font-light">Jumlah Peserta</span>
+                                    <span className="text-slate-500 font-light">Number of participants</span>
                                     <span className="font-bold text-mentawaiDark text-right">{formData.pax} Pax</span>
                                 </div>
                             </div>
 
                             <div className="bg-[#FAF8F5] rounded-2xl p-6 border border-mentawaiDark/5">
                                 <div className="flex justify-between items-center mb-4">
-                                    <span className="font-bold text-slate-400 text-xs uppercase tracking-wider">Total Pembayaran</span>
+                                    <span className="font-bold text-slate-400 text-xs uppercase tracking-wider">Total payment</span>
                                     <span className="font-black text-2xl text-mentawaiDark font-serif">{totalBiaya > 0 ? formatRupiah(totalBiaya) : 'Menunggu Konfirmasi'}</span>
                                 </div>
                                 <div className="text-xs text-gray-500 leading-relaxed text-center border-t border-slate-200/80 pt-4">
-                                    Sistem pembayaran manual. Kirim pesanan untuk mendapatkan instruksi transfer resmi dari Admin.
+                                    Manual payment system. Submit an order to receive official transfer instructions from the Admin.
                                 </div>
                             </div>
 
@@ -363,9 +363,9 @@ const Booking = () => {
                                 </button>
                                 <button onClick={prosesKeStep3} disabled={isSubmitting} className="flex-grow bg-[#103D2E] hover:bg-mentawaiSage text-white font-extrabold py-3.5 rounded-xl shadow-lg transition duration-300 flex justify-center items-center gap-2 text-center text-xs uppercase tracking-widest cursor-pointer disabled:opacity-50 disabled:cursor-wait">
                                     {isSubmitting ? (
-                                        <><i className="fa-solid fa-spinner fa-spin text-lg"></i> Memproses...</>
+                                        <><i className="fa-solid fa-spinner fa-spin text-lg"></i> Processing...</>
                                     ) : (
-                                        <><i className="fa-brands fa-whatsapp text-lg text-mentawaiMint"></i> Kirim ke Admin</>
+                                        <><i className="fa-brands fa-whatsapp text-lg text-mentawaiMint"></i> Send to Admin</>
                                     )}
                                 </button>
                             </div>
@@ -380,15 +380,15 @@ const Booking = () => {
                         </div>
 
                         <div className="space-y-2">
-                            <h2 className="text-2xl font-serif font-semibold text-mentawaiDark">Registrasi Terkirim!</h2>
+                            <h2 className="text-2xl font-serif font-semibold text-mentawaiDark">Registration Sent!</h2>
                             <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
-                                Terima kasih! Data booking Anda berhasil terekam ke sistem kami. Silakan cek jendela obrolan WhatsApp Anda.
+                                Thank you! Your booking details have been successfully recorded in our system. Please check your WhatsApp chat window.
                             </p>
                         </div>
 
                         <div className="flex flex-col gap-3 pt-6">
                             <button onClick={() => navigate('/')} className="bg-transparent border border-mentawaiDark/20 text-mentawaiDark font-extrabold py-3.5 rounded-xl transition text-xs uppercase tracking-wider">
-                                Kembali ke Beranda
+                                Return to Home
                             </button>
                         </div>
                     </div>

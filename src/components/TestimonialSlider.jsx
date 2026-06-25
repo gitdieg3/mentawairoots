@@ -111,11 +111,11 @@ const TestimonialSlider = ({ testimonials, loading }) => {
                     </div>
 
                     <div className="md:w-2/3 w-full flex flex-col gap-4">
-                        <p className="text-xs font-bold text-mentawaiDark uppercase tracking-widest mb-1">Metrik Kepuasan Pelancong</p>
+                        <p className="text-xs font-bold text-mentawaiDark uppercase tracking-widest mb-1">Traveler Satisfaction Metrics</p>
                         {[5, 4, 3].map((star) => (
                             <div key={star} className="flex items-center gap-4">
                                 <div className="text-xs text-gray-500 w-16 text-right leading-tight">
-                                    <span className="font-bold">{star}</span><br /><span className="text-[9px]">Bintang</span>
+                                    <span className="font-bold">{star}</span><br /><span className="text-[9px]">star</span>
                                 </div>
                                 <div className="flex-grow h-2.5 bg-gray-100 rounded-full overflow-hidden">
                                     <div

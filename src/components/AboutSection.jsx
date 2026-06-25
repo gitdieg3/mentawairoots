@@ -30,17 +30,14 @@ const AboutSection = ({ settings }) => {
                         <h2 className="text-4xl md:text-5xl font-serif font-semibold text-mentawaiDark leading-tight mb-6">Tentang Kami & Pemandu Lokal Anda</h2>
                         <div className="space-y-6 text-gray-600 font-light leading-relaxed text-sm md:text-base">
                             <p>
-                                Selamat datang di <strong className="text-mentawaiDark font-semibold">{settings.brand_name || 'Mentawai Roots'}</strong>. When i was a young boy living in north sumatra i once came across a newspaper cutting of two men in the jungle carrying a deer. Writen above was the words ANCIENT ISLAND TRIBE. I had no idea where it was but it fascinated me. At that time i was still in school and as young boys do i would day dream about going on an adventure to find the island tribe and go hunting in the jungle. one day after I finished school I left north sumatra and went to work in padang, west sumatra. .  finally i learned of an island 100 km west of padang where an ancient tribe lived and then i saw able to follow me dream and visit the mentawaiI ,i was so happy. </p>
+                                Welcome to <strong className="text-mentawaiDark font-semibold">{settings.brand_name || 'Mentawai Roots'}</strong>. When i was a young boy living in north sumatra i once came across a newspaper cutting of two men in the jungle carrying a deer. Writen above was the words ANCIENT ISLAND TRIBE. I had no idea where it was but it fascinated me. At that time i was still in school and as young boys do i would day dream about going on an adventure to find the island tribe and go hunting in the jungle. one day after I finished school I left north sumatra and went to work in padang, west sumatra. .  finally i learned of an island 100 km west of padang where an ancient tribe lived and then i saw able to follow me dream and visit the mentawaiI ,i was so happy. </p>
                             <p>
-
                                 Before I was a tour guide to the mentawai i worked at the mentawai foundation (ycm) for 2 years . I learned a lot about the customs of the mentawai tribe and studied there language. the mentawai language is very different from Indonesian.
-
                                 By 1997 my name was published in Stefan loose travel as a guide in the mentawai.
-
                                 I have now had many years of experience in the jungle with these beautiful calm and friendly people.
                             </p>
                             <p className="border-l-4 border-mentawaiMint pl-4 italic text-mentawaiSage bg-mentawaiSage/5 py-3 rounded-r-xl">
-                                "Setiap rupiah yang Anda belanjakan dalam ekspedisi ini langsung disalurkan untuk mendukung ekonomi keluarga suku pedalaman, pendidikan anak-anak suku, dan konservasi alam Siberut."
+                               "Every rupiah you spend on this expedition goes directly to support the economy of indigenous tribal families, the education of tribal children, and the conservation of Siberut's natural environment."
                             </p>
                         </div>
 
