@@ -55,11 +55,12 @@ const Reviews = () => {
         <div className="bg-[#FAF8F5] min-h-screen flex flex-col">
             <Navbar />
 
+            {}
             <main className="flex-grow pt-32 pb-24 px-6 relative">
                 <div className="max-w-7xl mx-auto">
                     
-                    {/* HEADER HALAMAN */}
                     <div className="text-center mb-16">
+                        <p className="text-mentawaiMint font-bold text-xs uppercase tracking-widest mb-3">Unfiltered Experiences</p>
                         <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-black text-mentawaiDark mb-6">
                             Traveler Stories
                         </h1>
@@ -68,7 +69,7 @@ const Reviews = () => {
                         </p>
                     </div>
 
-                    {/* TOMBOL FILTER */}
+                    {}
                     <div className="flex flex-wrap justify-center gap-4 mb-16">
                         {['ALL', 'CULTURAL', 'SURF'].map(filterType => (
                             <button 
@@ -81,7 +82,7 @@ const Reviews = () => {
                         ))}
                     </div>
 
-                    {/* DAFTAR FULL REVIEW (GRID LAYOUT RATA) */}
+                    {}
                     {loading ? (
                         <div className="flex justify-center items-center py-20 text-mentawaiMint font-bold animate-pulse">
                             <i className="fa-solid fa-compass fa-spin mr-3 text-xl"></i> Memuat cerita petualang...
@@ -99,7 +100,6 @@ const Reviews = () => {
                                 return (
                                     <div 
                                         key={testi.id} 
-                                        // h-full bikin semua kartu di satu baris tingginya sama
                                         className="bg-white p-8 rounded-3xl border border-mentawaiDark/5 shadow-sm hover:shadow-xl transition duration-300 flex flex-col h-full group"
                                     >
                                         <div className="flex justify-between items-start mb-6">
@@ -112,18 +112,25 @@ const Reviews = () => {
                                             </span>
                                         </div>
                                         
-                                        {/* flex-grow dorong bagian bawah (profil) ke dasar kotak, text-justify biar rata tulisan */}
                                         <div className="flex-grow mb-6">
                                             <p className="text-slate-600 font-light leading-relaxed text-sm italic text-justify">
                                                 "{testi.ulasan}"
                                             </p>
                                         </div>
 
-                                        {/* mt-auto mastiin posisi profil selalu sejajar di bawah */}
+                                        {}
                                         <div className="flex items-center gap-4 border-t border-slate-100 pt-6 mt-auto">
-                                            <div className="w-12 h-12 rounded-full bg-[#0B2B20] text-mentawaiMint flex items-center justify-center font-serif font-bold text-lg shadow-inner flex-shrink-0">
-                                                {getInitials(testi.nama)}
-                                            </div>
+                                            {testi.foto ? (
+                                                <img 
+                                                    src={testi.foto} 
+                                                    alt={testi.nama} 
+                                                    className="w-12 h-12 rounded-full object-cover flex-shrink-0 border border-slate-100 shadow-inner"
+                                                />
+                                            ) : (
+                                                <div className="w-12 h-12 rounded-full bg-[#0B2B20] text-mentawaiMint flex items-center justify-center font-serif font-bold text-lg shadow-inner flex-shrink-0">
+                                                    {getInitials(testi.nama)}
+                                                </div>
+                                            )}
                                             <div>
                                                 <h4 className="font-bold text-slate-800 text-sm">{testi.nama}</h4>
                                                 <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">{testi.asal}</span>
@@ -136,7 +143,8 @@ const Reviews = () => {
                     )}
                 </div>
             </main>
-    
+            
+           
         </div>
     );
 };

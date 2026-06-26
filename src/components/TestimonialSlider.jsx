@@ -4,7 +4,7 @@ const TestimonialSlider = ({ testimonials, loading }) => {
     const [activeFilter, setActiveFilter] = useState('ALL');
     const sliderRef = useRef(null);
 
-    // Fungsi bantuan untuk mengambil inisial nama
+    // Fungsi bantuan untuk mengambil inisial nama jika foto kosong
     const getInitials = (name) => {
         if (!name) return '?';
         const parts = name.split(' ');
@@ -56,22 +56,17 @@ const TestimonialSlider = ({ testimonials, loading }) => {
             if (sliderRef.current) {
                 const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
 
-                // Cek apakah slider sudah mentok di ujung kanan
                 const isEnd = Math.ceil(scrollLeft + clientWidth) >= scrollWidth;
 
                 if (isEnd) {
-                    // Kalau mentok, balik ke awal dengan mulus
                     sliderRef.current.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
-                    // Geser sejauh ukuran 1 kartu
                     const cardWidth = sliderRef.current.children[0].clientWidth;
-                    // Ditambah gap (sekitar 32px untuk gap-8)
                     sliderRef.current.scrollBy({ left: cardWidth + 32, behavior: 'smooth' });
                 }
             }
-        }, 3500); // Waktu auto-slide: 3.5 detik
+        }, 3500);
 
-        // Bersihkan interval saat komponen dibongkar atau filter berubah
         return () => clearInterval(interval);
     }, [filteredTestimonials.length, activeFilter]);
 
@@ -82,16 +77,13 @@ const TestimonialSlider = ({ testimonials, loading }) => {
                     <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-black text-mentawaiDark mb-6">
                         Testimoni
                     </h1>
-
                 </div>
+
                 {/* 1. KOTAK METRIK RATING (DASHBOARD ATAS) */}
                 <div className="bg-white rounded-3xl p-8 md:p-12 shadow-sm border border-mentawaiDark/5 mb-12 flex flex-col md:flex-row items-center gap-12">
-                    {/* Kiri: Rata-rata Angka & Bintang Dinamis */}
                     <div className="text-center md:w-1/3 md:border-r border-gray-100 md:pr-12">
-                        {/* Ini angka gedenya yang tadi hilang */}
                         <h2 className="text-6xl font-serif font-black text-mentawaiDark mb-2">{averageRating}</h2>
 
-                        {/* Ini logika bintang dinamisnya */}
                         <div className="flex justify-center text-mentawaiGold text-xl gap-1 mb-2">
                             {[...Array(Math.floor(parseFloat(averageRating) || 0))].map((_, i) => (
                                 <i key={`full-${i}`} className="fa-solid fa-star"></i>
@@ -104,7 +96,6 @@ const TestimonialSlider = ({ testimonials, loading }) => {
                             ))}
                         </div>
 
-                        {/* Ini teks kecil di bawahnya */}
                         <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
                             Average Rating ({totalReviews} Reviews)
                         </p>
@@ -131,9 +122,6 @@ const TestimonialSlider = ({ testimonials, loading }) => {
                     </div>
                 </div>
 
-                {/* 2. TOMBOL FILTER */}
-
-
                 <div className="flex justify-center mb-12">
                     <a
                         href="/reviews"
@@ -149,7 +137,6 @@ const TestimonialSlider = ({ testimonials, loading }) => {
                 ) : filteredTestimonials.length === 0 ? (
                     <div className="text-center text-gray-400 py-10">Belum ada ulasan untuk kategori ini.</div>
                 ) : (
-                    // KONTENER SLIDER
                     <div
                         ref={sliderRef}
                         className="flex overflow-x-auto gap-8 pb-8 snap-x snap-mandatory scroll-smooth [&::-webkit-scrollbar]:hidden"
@@ -176,15 +163,26 @@ const TestimonialSlider = ({ testimonials, loading }) => {
                                         </div>
                                         <p className="text-slate-600 font-light leading-relaxed text-sm italic mb-8">"{testi.ulasan}"</p>
                                     </div>
+                                    
+                                    {/* SEKTOR AVATAR DAN IDENTITAS YANG SUDAH DIPERBAIKI */}
                                     <div className="flex items-center gap-4 border-t border-slate-100 pt-6 mt-auto">
-                                        <div className="w-12 h-12 rounded-full bg-[#0B2B20] text-mentawaiMint flex items-center justify-center font-serif font-bold text-lg shadow-inner flex-shrink-0">
-                                            {getInitials(testi.nama)}
-                                        </div>
+                                        {testi.foto ? (
+                                            <img 
+                                                src={testi.foto} 
+                                                alt={testi.nama} 
+                                                className="w-12 h-12 rounded-full object-cover flex-shrink-0 border border-slate-100 shadow-inner"
+                                            />
+                                        ) : (
+                                            <div className="w-12 h-12 rounded-full bg-[#0B2B20] text-mentawaiMint flex items-center justify-center font-serif font-bold text-lg shadow-inner flex-shrink-0">
+                                                {getInitials(testi.nama)}
+                                            </div>
+                                        )}
                                         <div>
                                             <h4 className="font-bold text-slate-800 text-sm truncate w-32 md:w-48">{testi.nama}</h4>
                                             <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">{testi.asal}</span>
                                         </div>
                                     </div>
+
                                 </div>
                             );
                         })}
