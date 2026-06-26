@@ -50,7 +50,7 @@ const Navbar = () => {
                 <div className="hidden md:block">
                     <a href={`https://wa.me/${adminPhone}`} target="_blank" rel="noreferrer"
                         className="bg-mentawaiDark text-white hover:bg-mentawaiSage px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition duration-300 shadow-lg shadow-mentawaiDark/10 hover:shadow-xl hover:shadow-mentawaiSage/20 transform hover:-translate-y-0.5">
-                        Hubungi WA
+                        Contact Admin
                     </a>
                 </div>
             </div>

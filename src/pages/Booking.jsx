@@ -115,7 +115,7 @@ const Booking = () => {
             const { error } = await supabase.from('data_booking').insert([payload]);
             if (error) throw error;
 
-            let teksWA = `*INVOICE REGISTRASI ${(settings.brand_name || 'MENTAWAI HANTAGE').toUpperCase()}*\n`;
+            let teksWA = `*INVOICE REGISTRASI ${(settings.brand_name || 'MENTAWAI ROOTS').toUpperCase()}*\n`;
             teksWA += `===============================\n\n`;
             teksWA += `• *ID Booking:* ${invoice.id}\n`;
             teksWA += `• *Nama Pemesan:* ${formData.nama}\n`;
@@ -197,14 +197,14 @@ const Booking = () => {
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Full name (Sesuai ID) <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
-                                            <input type="text" id="form-nama" value={formData.nama} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Contoh: Aman Silaing" />
+                                            <input type="text" id="form-nama" value={formData.nama} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Example: Aman Silaing" />
                                         </div>
                                     </div>
                                     <div>
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Active WhatsApp Number <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-brands fa-whatsapp absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage text-base"></i>
-                                            <input type="tel" id="form-kontak" value={formData.kontak} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Contoh: 08123456789" />
+                                            <input type="tel" id="form-kontak" value={formData.kontak} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Example: 08123456789" />
                                         </div>
                                     </div>
                                 </div>
@@ -214,7 +214,7 @@ const Booking = () => {
                                         <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2">Email address <span className="text-red-500">*</span></label>
                                         <div className="relative">
                                             <i className="fa-regular fa-envelope absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
-                                            <input type="email" id="form-email" value={formData.email} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Contoh: explorer@domain.com" />
+                                            <input type="email" id="form-email" value={formData.email} onChange={handleChange} required className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-medium text-sm" placeholder="Example: explorer@gmail.com" />
                                         </div>
                                     </div>
                                     <div>
@@ -247,7 +247,7 @@ const Booking = () => {
                                             <i className="fa-solid fa-users absolute left-4 top-1/2 -translate-y-1/2 text-mentawaiSage"></i>
                                             <select id="form-pax" value={formData.pax} onChange={handleChange} className="w-full pl-11 pr-4 py-3.5 bg-[#FAF8F5] border border-mentawaiDark/10 rounded-xl focus:outline-none focus:border-mentawaiMint focus:ring-1 focus:ring-mentawaiMint transition font-semibold text-sm appearance-none cursor-pointer">
                                                 {[...Array(10).keys()].map(n => (
-                                                    <option key={n + 1} value={n + 1}>{n + 1} Orang</option>
+                                                    <option key={n + 1} value={n + 1}>{n + 1} Person</option>
                                                 ))}
                                                 <option value="11">Large Group</option>
                                             </select>
@@ -264,7 +264,7 @@ const Booking = () => {
                                 <div className="flex items-start gap-3 bg-[#103D2E]/5 p-5 rounded-2xl border border-mentawaiDark/5">
                                     <input type="checkbox" id="syarat-ketentuan" required className="mt-1 w-4 h-4 text-mentawaiSage focus:ring-mentawaiMint border-slate-300 rounded accent-mentawaiSage" />
                                     <label htmlFor="syarat-ketentuan" className="text-xs text-slate-600 leading-relaxed font-medium">
-                                        I agree throughout <span className="text-mentawaiDark font-bold underline cursor-pointer">Terms & Conditions</span> dari {settings.brand_name || 'Mentawai Hantage'}.
+                                        I agree throughout <span className="text-mentawaiDark font-bold underline cursor-pointer">Terms & Conditions</span> dari {settings.brand_name || 'Mentawai Roots'}.
                                     </label>
                                 </div>
 
@@ -284,7 +284,7 @@ const Booking = () => {
                                         <div>
 
                                             <p className="font-serif font-bold text-mentawaiDark text-base">{dataPaketTerpilih?.nama_paket}</p>
-                                            <p className="text-xs text-slate-500 mt-1">{dataPaketTerpilih?.harga > 0 ? `${formatRupiah(dataPaketTerpilih.harga)} / pax` : 'Sesuai Kesepakatan'}</p>
+                                            <p className="text-xs text-slate-500 mt-1">{dataPaketTerpilih?.harga > 0 ? `${formatRupiah(dataPaketTerpilih.harga)} / pax` : '-'}</p>
                                         </div>
                                         <span className="font-bold text-mentawaiDark text-sm bg-mentawaiBone px-3 py-1 rounded-full border border-mentawaiDark/5">{formData.pax} Pax</span>
                                     </div>
@@ -350,7 +350,7 @@ const Booking = () => {
                             <div className="bg-[#FAF8F5] rounded-2xl p-6 border border-mentawaiDark/5">
                                 <div className="flex justify-between items-center mb-4">
                                     <span className="font-bold text-slate-400 text-xs uppercase tracking-wider">Total payment</span>
-                                    <span className="font-black text-2xl text-mentawaiDark font-serif">{totalBiaya > 0 ? formatRupiah(totalBiaya) : 'Menunggu Konfirmasi'}</span>
+                                    <span className="font-black text-2xl text-mentawaiDark font-serif">{totalBiaya > 0 ? formatRupiah(totalBiaya) : 'Waiting for Confirmation'}</span>
                                 </div>
                                 <div className="text-xs text-gray-500 leading-relaxed text-center border-t border-slate-200/80 pt-4">
                                     Manual payment system. Submit an order to receive official transfer instructions from the Admin.
