@@ -19,7 +19,7 @@ const PackageCard = ({ pkg }) => {
 
                 <div className="mt-auto pt-6 border-t border-mentawaiDark/5 flex justify-between items-center">
                     <div>
-                        <span className="text-[9px] text-gray-400 font-bold block uppercase tracking-wider mb-0.5">Investasi Perjalanan</span>
+                        <span className="text-[9px] text-gray-400 font-bold block uppercase tracking-wider mb-0.5">Travel Investment</span>
                         <span className="font-black text-mentawaiSage text-xl">
                             {pkg.harga > 0 ? (
                                 <>Rp {pkg.harga.toLocaleString('id-ID')} <span className="text-xs font-normal text-gray-400">/ pax</span></>

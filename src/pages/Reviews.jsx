@@ -65,7 +65,7 @@ const Reviews = () => {
                             Traveler Stories
                         </h1>
                         <p className="text-slate-500 max-w-2xl mx-auto text-sm md:text-base">
-                            Membaca pengalaman otentik dari mereka yang telah menembus pedalaman Siberut dan menaklukkan ombak Mentawai bersama kami.
+                            Read authentic experiences from those who have penetrated the interior of Siberut and conquered the Mentawai waves with us.
                         </p>
                     </div>
 

@@ -124,7 +124,7 @@ const Home = () => {
                 <div className="relative z-20 w-full max-w-5xl mx-auto mt-6">
                     <div className="bg-[#103D2E]/90 backdrop-blur-lg p-5 md:p-4 rounded-3xl shadow-2xl border border-white/10 flex flex-col md:flex-row gap-4 items-stretch">
                         <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-left focus-within:border-mentawaiMint focus-within:bg-white/10 transition">
-                            <label className="text-[10px] font-bold text-white/50 uppercase tracking-widest block mb-1">Kategori Wisata</label>
+                            <label className="text-[10px] font-bold text-white/50 uppercase tracking-widest block mb-1">Touristm catagory</label>
                             <div className="relative">
                                 <select id="wa_kategori" className="w-full font-bold text-white outline-none bg-transparent appearance-none cursor-pointer pr-6">
                                     {categories.length === 0 ? (
@@ -139,16 +139,16 @@ const Home = () => {
                             </div>
                         </div>
                         <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-left focus-within:border-mentawaiMint focus-within:bg-white/10 transition">
-                            <label className="text-[10px] font-bold text-white/50 uppercase tracking-widest block mb-1">Keberangkatan</label>
+                            <label className="text-[10px] font-bold text-white/50 uppercase tracking-widest block mb-1">Daparture</label>
                             <input type="date" id="wa_tanggal" className="w-full font-bold text-white outline-none bg-transparent cursor-pointer text-sm [color-scheme:dark]" />
                         </div>
                         <div className="flex-1 bg-white/5 border border-white/10 rounded-2xl p-3 text-left focus-within:border-mentawaiMint focus-within:bg-white/10 transition">
-                            <label className="text-[10px] font-bold text-white/50 uppercase tracking-widest block mb-1">Jumlah Peserta</label>
+                            <label className="text-[10px] font-bold text-white/50 uppercase tracking-widest block mb-1">Number of participants</label>
                             <div className="relative">
                                 <select id="wa_peserta" className="w-full font-bold text-white outline-none bg-transparent appearance-none cursor-pointer pr-6">
-                                    <option value="1 - 3 Adventurers" className="bg-mentawaiDark text-white">1 - 3 Orang</option>
-                                    <option value="4 - 7 Adventurers" className="bg-mentawaiDark text-white">4 - 7 Orang</option>
-                                    <option value="Rombongan Besar (8+)" className="bg-mentawaiDark text-white">Rombongan (8+)</option>
+                                    <option value="1 - 3 Adventurers" className="bg-mentawaiDark text-white">1 - 3  person</option>
+                                    <option value="4 - 7 Adventurers" className="bg-mentawaiDark text-white">4 - 7 person</option>
+                                    <option value="Large group (8+)" className="bg-mentawaiDark text-white">Group (8+)</option>
                                 </select>
                                 <i className="fa-solid fa-chevron-down text-white/60 absolute right-1 top-1 pointer-events-none text-xs"></i>
                             </div>
@@ -169,7 +169,7 @@ const Home = () => {
                     </div>
                     <div>
                         <a href="#media-gallery" className="inline-flex items-center gap-2 border border-mentawaiDark/20 hover:border-mentawaiMint hover:bg-mentawaiMint/5 text-mentawaiDark hover:text-mentawaiMint px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300">
-                            Lihat Galeri Dokumentasi <i className="fa-solid fa-photo-film"></i>
+                            View Documentation Gallery <i className="fa-solid fa-photo-film"></i>
                         </a>
                     </div>
                 </div>

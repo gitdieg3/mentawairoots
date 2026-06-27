@@ -27,7 +27,7 @@ const AboutSection = ({ settings }) => {
 
                     <div className="lg:col-span-7 flex flex-col justify-center">
                         <p className="text-mentawaiMint font-bold text-xs uppercase tracking-widest mb-3">Meet the Protectors of the Forest</p>
-                        <h2 className="text-4xl md:text-5xl font-serif font-semibold text-mentawaiDark leading-tight mb-6">Tentang Kami & Pemandu Lokal Anda</h2>
+                        <h2 className="text-4xl md:text-5xl font-serif font-semibold text-mentawaiDark leading-tight mb-6">About Us & Your Local Guide</h2>
                         <div className="space-y-6 text-gray-600 font-light leading-relaxed text-sm md:text-base">
                             <p>
                                 Welcome to <strong className="text-mentawaiDark font-semibold">{settings.brand_name || 'Mentawai Roots'}</strong>. When i was a young boy living in north sumatra i once came across a newspaper cutting of two men in the jungle carrying a deer. Writen above was the words ANCIENT ISLAND TRIBE. I had no idea where it was but it fascinated me. At that time i was still in school and as young boys do i would day dream about going on an adventure to find the island tribe and go hunting in the jungle. one day after I finished school I left north sumatra and went to work in padang, west sumatra. .  finally i learned of an island 100 km west of padang where an ancient tribe lived and then i saw able to follow me dream and visit the mentawaiI ,i was so happy. </p>

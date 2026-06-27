@@ -53,7 +53,7 @@ const Footer = () => {
                         </li>
                         <li className="flex items-center gap-3">
                             <i className="fa-brands fa-whatsapp text-mentawaiMint text-base"></i>
-                            <span>{settings.nomor_wa || '+62 812-6774-808'}</span>
+                            <span>+{settings.nomor_wa || '+62 812-6774-808'}</span>
                         </li>
                         <li className="flex items-center gap-3">
                             <i className="fa-solid fa-envelope text-mentawaiMint text-base"></i>
