@@ -86,12 +86,11 @@ const Home = () => {
             alert('Pemberitahuan: Silakan tentukan tanggal keberangkatan yang Anda inginkan.');
             return;
         }
-
-        let textPesan = `Halo Mentawai roots!\n\nSaya ingin berkonsultasi mengenai petualangan ekspedisi Mentawai dengan rincian berikut:\n` +
-            `- *Kategori Adventure:* ${kategori}\n` +
-            `- *Tanggal Keberangkatan:* ${tanggal}\n` +
-            `- *Jumlah Peserta:* ${peserta}\n\n` +
-            `Apakah kuota perjalanan untuk rute ini masih tersedia? Terima kasih!`;
+        let textPesan = `Hello Mentawai Roots!\n\nI would like to consult about a Mentawai expedition adventure with the following details:\n` +
+            `- *Adventure Category:* ${kategori}\n` +
+            `- *Departure Date:* ${tanggal}\n` +
+            `- *Number of Participants:* ${peserta}\n\n` +
+            `Is the travel quota for this route still available? Thank you!`;
 
         let phone = settings.nomor_wa || '628126774808';
         phone = phone.replace(/\D/g, ''); // <-- TAMBAHAN: Bersihkan semua simbol & spasi
@@ -175,8 +174,8 @@ const Home = () => {
                     <button
                         onClick={() => setActiveCategory('All')}
                         className={`shrink-0 px-5 py-2 md:px-6 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 ${activeCategory === 'All'
-                                ? 'bg-[#103D2E] text-white shadow-md'
-                                : 'bg-white hover:bg-gray-50 text-gray-500 border border-gray-200'
+                            ? 'bg-[#103D2E] text-white shadow-md'
+                            : 'bg-white hover:bg-gray-50 text-gray-500 border border-gray-200'
                             }`}
                     >
                         All Expeditions
@@ -187,8 +186,8 @@ const Home = () => {
                             key={kat.id}
                             onClick={() => setActiveCategory(kat.nama)}
                             className={`shrink-0 px-5 py-2 md:px-6 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 ${activeCategory === kat.nama
-                                    ? 'bg-[#103D2E] text-white shadow-md'
-                                    : 'bg-white hover:bg-gray-50 text-gray-500 border border-gray-200'
+                                ? 'bg-[#103D2E] text-white shadow-md'
+                                : 'bg-white hover:bg-gray-50 text-gray-500 border border-gray-200'
                                 }`}
                         >
                             {kat.nama}
