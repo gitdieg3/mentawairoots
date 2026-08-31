@@ -109,10 +109,7 @@ const Home = () => {
                 </div>
 
                 <div className="relative z-10 w-full max-w-4xl mx-auto flex-grow flex flex-col justify-center items-center mt-6">
-                    <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 mb-8 animate-fade-in-down">
-                        <span className="w-2 h-2 rounded-full bg-mentawaiMint animate-pulse"></span>
-                        <span className="text-white text-xs font-bold uppercase tracking-widest">West Sumatra, Indonesia</span>
-                    </div>
+
                     <h1 className="text-5xl md:text-7xl font-serif text-white mb-6 leading-[1.1] drop-shadow-sm font-light">
                         Where the Jungle <br /><span className="text-mentawaiMint italic font-medium">Meets the Wave.</span>
                     </h1>
@@ -161,45 +158,58 @@ const Home = () => {
             </section>
 
             {/* PACKAGES SECTION */}
-            <section id="packages" className="py-24 px-6 max-w-7xl mx-auto">
-                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 gap-6">
-                    <div>
-                        <p className="text-mentawaiMint font-bold text-xs uppercase tracking-widest mb-3">Our Curated Adventures</p>
-                        <h2 className="text-4xl md:text-5xl font-serif font-semibold text-mentawaiDark leading-tight">Choose Your <br />Adventure Level</h2>
-                    </div>
-                    <div>
-                        <a href="#media-gallery" className="inline-flex items-center gap-2 border border-mentawaiDark/20 hover:border-mentawaiMint hover:bg-mentawaiMint/5 text-mentawaiDark hover:text-mentawaiMint px-6 py-3 rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300">
-                            View Documentation Gallery <i className="fa-solid fa-photo-film"></i>
-                        </a>
-                    </div>
+            <section id="packages" className="py-12 md:py-24 px-4 sm:px-6 md:px-12 max-w-7xl mx-auto">
+
+                {/* Header Section - Dibuat Rata Tengah (Center Aligned) */}
+                <div className="flex flex-col items-center text-center mb-8 md:mb-12 max-w-2xl mx-auto">
+                    <p className="text-mentawaiMint font-bold text-[10px] md:text-xs uppercase tracking-widest mb-3">
+                        Our Curated Adventures
+                    </p>
+                    <h2 className="text-3xl sm:text-4xl md:text-5xl font-serif font-semibold text-mentawaiDark leading-tight">
+                        Choose Your Adventure Level
+                    </h2>
                 </div>
 
-                <div className="flex flex-wrap gap-2.5 mb-12">
+                {/* Filter Buttons - Rata tengah di Desktop, Scrollable di Mobile */}
+                <div className="flex items-center md:justify-center gap-3 overflow-x-auto pb-4 mb-8 md:mb-12 no-scrollbar -mx-4 px-4 md:mx-0 md:px-0">
                     <button
                         onClick={() => setActiveCategory('All')}
-                        className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md transition-all ${activeCategory === 'All' ? 'bg-[#103D2E] text-[#FAF8F5]' : 'bg-white hover:bg-mentawaiDark/5 text-mentawaiDark/80 border border-mentawaiDark/10'}`}
+                        className={`shrink-0 px-5 py-2 md:px-6 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 ${activeCategory === 'All'
+                                ? 'bg-[#103D2E] text-white shadow-md'
+                                : 'bg-white hover:bg-gray-50 text-gray-500 border border-gray-200'
+                            }`}
                     >
                         All Expeditions
                     </button>
+
                     {categories.map(kat => (
                         <button
                             key={kat.id}
                             onClick={() => setActiveCategory(kat.nama)}
-                            className={`px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider shadow-md transition-all ${activeCategory === kat.nama ? 'bg-[#103D2E] text-[#FAF8F5]' : 'bg-white hover:bg-mentawaiDark/5 text-mentawaiDark/80 border border-mentawaiDark/10'}`}
+                            className={`shrink-0 px-5 py-2 md:px-6 md:py-2.5 rounded-full text-[10px] md:text-xs font-bold uppercase tracking-wider transition-all duration-300 ${activeCategory === kat.nama
+                                    ? 'bg-[#103D2E] text-white shadow-md'
+                                    : 'bg-white hover:bg-gray-50 text-gray-500 border border-gray-200'
+                                }`}
                         >
                             {kat.nama}
                         </button>
                     ))}
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {/* Package Cards Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                     {loading ? (
-                        <div className="col-span-3 text-center py-10 text-mentawaiMint font-bold animate-pulse">
-                            Memuat Petualangan Anda...
+                        <div className="col-span-1 sm:col-span-2 lg:col-span-3 flex flex-col items-center justify-center py-16">
+                            <i className="fa-solid fa-compass fa-spin text-2xl text-mentawaiMint mb-3"></i>
+                            <p className="text-mentawaiDark font-medium text-sm animate-pulse tracking-wide">
+                                Loading your adventures...
+                            </p>
                         </div>
                     ) : filteredPackages.length === 0 ? (
-                        <div className="col-span-3 text-center py-10 text-gray-500">
-                            Paket wisata untuk kategori ini belum tersedia.
+                        <div className="col-span-1 sm:col-span-2 lg:col-span-3 text-center py-16 bg-gray-50 rounded-3xl border border-gray-100">
+                            <p className="text-gray-400 font-medium">
+                                No adventures found in this category yet.
+                            </p>
                         </div>
                     ) : (
                         filteredPackages.map((pkg) => (

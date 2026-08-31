@@ -26,7 +26,7 @@ const Navbar = () => {
                 <a href="/" className="flex items-center gap-2.5 text-2xl font-black tracking-tight text-mentawaiDark">
                     <span className="font-serif italic font-bold">Mentawai</span>
                     <span className="text-mentawaiSage font-sans font-light tracking-widest text-lg border-l border-mentawaiDark/20 pl-2">
-                        {settings.brand_name ? settings.brand_name.replace('Mentawai ', '') : 'Hantage'}
+                        {settings.brand_name ? settings.brand_name.replace('Mentawai ', '') : 'roots'}
                     </span>
                 </a>
 

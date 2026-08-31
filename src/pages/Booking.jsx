@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import { supabase } from '../supabaseClient';
-import { useGlobal } from '../GlobalContext'; // <-- IMPORT JANTUNG
+import { useGlobal } from '../GlobalContext';
 
 const Booking = () => {
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    // <-- TARIK TOOLS TOAST & SETTINGS DARI JANTUNG
+
     const { showToast, settings } = useGlobal();
 
     const [step, setStep] = useState(1);
@@ -49,8 +49,8 @@ const Booking = () => {
                 }));
 
             } catch (error) {
-                console.error("Gagal menarik data:", error.message);
-                showToast("Gagal memuat data paket.", "error"); // Toast Elegan
+                console.error("Failed to retrieve data:", error.message);
+                showToast("Failed to load package data.", "error"); // Toast Elegan
             } finally {
                 setLoading(false);
             }
@@ -71,7 +71,7 @@ const Booking = () => {
 
     // FORMAT NOMOR WA OTOMATIS DARI SETTINGS
     let adminPhone = settings.nomor_wa || '628126774808';
-    adminPhone = adminPhone.replace(/\D/g, ''); // <-- TAMBAHAN: Bersihkan semua simbol & spasi
+    adminPhone = adminPhone.replace(/\D/g, '');
     if (adminPhone.startsWith('0')) {
         adminPhone = '62' + adminPhone.substring(1);
     }
@@ -115,23 +115,23 @@ const Booking = () => {
             const { error } = await supabase.from('data_booking').insert([payload]);
             if (error) throw error;
 
-            let teksWA = `*INVOICE REGISTRASI ${(settings.brand_name || 'MENTAWAI ROOTS').toUpperCase()}*\n`;
+            let teksWA = `*REGISTRATION INVOICE ${(settings.brand_name || 'MENTAWAI ROOTS').toUpperCase()}*\n`;
             teksWA += `===============================\n\n`;
-            teksWA += `• *ID Booking:* ${invoice.id}\n`;
-            teksWA += `• *Nama Pemesan:* ${formData.nama}\n`;
-            teksWA += `• *Kontak/WA:* ${formData.kontak}\n`;
-            teksWA += `• *Alamat Email:* ${formData.email}\n\n`;
+            teksWA += `• *Booking ID:* ${invoice.id}\n`;
+            teksWA += `• *Guest Name:* ${formData.nama}\n`;
+            teksWA += `• *Contact/WhatsApp:* ${formData.kontak}\n`;
+            teksWA += `• *Email Address:* ${formData.email}\n\n`;
             teksWA += `---------------------------------\n`;
-            teksWA += `*RINCIAN PERJALANAN*\n`;
+            teksWA += `*TRIP DETAILS*\n`;
             teksWA += `---------------------------------\n`;
-            teksWA += `• *Paket Tour:* ${dataPaketTerpilih?.nama_paket}\n`;
-            teksWA += `• *Tgl Berangkat:* ${formData.tanggal}\n`;
-            teksWA += `• *Jumlah Peserta:* ${formData.pax} Orang\n`;
-            teksWA += `• *Catatan:* ${formData.catatan || '-'}\n\n`;
+            teksWA += `• *Tour Package:* ${dataPaketTerpilih?.nama_paket}\n`;
+            teksWA += `• *Departure Date:* ${formData.tanggal}\n`;
+            teksWA += `• *Number of Guests:* ${formData.pax} Persons\n`;
+            teksWA += `• *Notes:* ${formData.catatan || '-'}\n\n`;
             teksWA += `---------------------------------\n`;
-            teksWA += `• *TOTAL ESTIMASI:* ${formatRupiah(totalBiaya)}\n`;
+            teksWA += `• *TOTAL ESTIMATE:* ${formatRupiah(totalBiaya)}\n`;
             teksWA += `===============================\n\n`;
-            teksWA += `Mohon bantuannya memproses booking saya. Terima kasih! 🙏`;
+            teksWA += `Please kindly help process my booking. Thank you! 🙏`;
 
             window.open(`https://wa.me/${adminPhone}?text=${encodeURIComponent(teksWA)}`, '_blank');
 
@@ -143,7 +143,7 @@ const Booking = () => {
 
         } catch (err) {
             // <-- 4. GANTI ALERT JADI TOAST ELEGAN
-            showToast("Gagal mengirim data registrasi: " + err.message, "error");
+            showToast("Failed to send registration data: " + err.message, "error");
             setIsSubmitting(false);
         }
     };
@@ -153,7 +153,7 @@ const Booking = () => {
             <div className="min-h-screen flex items-center justify-center bg-[#FAF8F5]">
                 <div className="text-center text-mentawaiDark font-bold animate-pulse text-xl font-serif">
                     <i className="fa-solid fa-spinner fa-spin text-4xl mb-4 block text-mentawaiMint"></i>
-                    Memuat Modul Booking...
+                    Loading Modul Booking...
                 </div>
             </div>
         );

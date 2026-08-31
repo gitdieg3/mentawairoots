@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { GlobalProvider, useGlobal } from './GlobalContext';
-import { supabase } from './supabaseClient'; // Pastikan import supabase untuk ngecek sesi
+import { supabase } from './supabaseClient';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import FloatingWhatsApp from './components/FloatingWhatsApp'; 
 import Home from './pages/Home';
 import Detail from './pages/Detail';
 import Booking from './pages/Booking';
-import Login from './pages/Login';
+import Login from './pages/login';
 import Admin from './pages/Admin';
 import Reviews from './pages/Reviews';
 
-// ================= KOMPONEN PROTEKSI RUTE ADMIN =================
+// ================= KOMPONEN PROTEKSI RUTE ADMIN (REAL-TIME) =================
 const ProtectedRoute = ({ children }) => {
     const [session, setSession] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -23,17 +24,25 @@ const ProtectedRoute = ({ children }) => {
             setSession(session);
             setLoading(false);
         });
+
+        // Mendengarkan perubahan state auth (login/logout secara real-time)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setSession(session);
+            setLoading(false);
+        });
+
+        return () => subscription.unsubscribe();
     }, []);
 
     if (loading) {
         return (
             <div className="h-screen flex items-center justify-center bg-[#0A1610] text-[#D4F85A] font-bold text-xl animate-pulse">
-                <i className="fa-solid fa-shield-halved mr-3"></i> Memverifikasi Keamanan...
+                <i className="fa-solid fa-shield-halved mr-3"></i> Memverifikasi ...
             </div>
         );
     }
     
-    // Jika tidak ada sesi, langsung tendang ke login (tanpa render halaman Admin)
+    // Jika tidak ada sesi, langsung tendang ke login
     if (!session) return <Navigate to="/login" replace />;
     
     return children;
@@ -84,7 +93,7 @@ function App() {
                             <Route path="/login" element={<Login />} />
                             <Route path="/reviews" element={<Reviews />} />
                             
-                            {/* Rute Admin Sudah Dibungkus Gembok Keamanan */}
+                            {/* Rute Admin Dibungkus Gembok Keamanan */}
                             <Route path="/admin/*" element={
                                 <ProtectedRoute>
                                     <Admin />
@@ -92,6 +101,9 @@ function App() {
                             } />
                         </Routes>
                     </LayoutWrapper>
+
+                    {/* Widget WhatsApp Melayang Global */}
+                    <FloatingWhatsApp />
                 </div>
             </Router>
         </GlobalProvider>
