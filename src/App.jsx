@@ -9,7 +9,7 @@ import FloatingWhatsApp from './components/FloatingWhatsApp';
 import Home from './pages/Home';
 import Detail from './pages/Detail';
 import Booking from './pages/Booking';
-import Login from './pages/login';
+import Login from './pages/Login';
 import Admin from './pages/Admin';
 import Reviews from './pages/Reviews';
 
