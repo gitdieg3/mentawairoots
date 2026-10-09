@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+
 
 const Reviews = () => {
     const [testimonials, setTestimonials] = useState([]);
@@ -38,7 +37,6 @@ const Reviews = () => {
 
     return (
         <div className="bg-[#FAF8F5] min-h-screen flex flex-col">
-            <Navbar />
 
             <main className="flex-grow pt-32 pb-24 px-6 relative">
                 <div className="max-w-7xl mx-auto">
@@ -113,8 +111,7 @@ const Reviews = () => {
                     )}
                 </div>
             </main>
-            
-            <Footer />
+        
         </div>
     );
 };

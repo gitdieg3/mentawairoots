@@ -1,16 +1,15 @@
+
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Warna Mentawai Hantage (Web Depan) */
-  --color-mentawaiDark: #0B2B20;    /* Deep Forest Green */
-  --color-mentawaiSage: #3D7A5A;    /* Classic Tribal Green */
-  --color-mentawaiMint: #59C394;    /* Modern Accent Mint */
-  --color-mentawaiGold: #E5A93C;    /* Warm Ochre / Gold */
-  --color-mentawaiBone: #FAF8F5;    /* Premium Warm White Background */
-
-  /* Warna CMS Admin (TqmTravel) - INI YANG KELUPAAN TADI! */
-  --color-tqmNavy: #142c54;
-  --color-tqmYellow: #f2c318;
+  --font-serif: 'Playfair Display', Georgia, serif;
+  --color-mentawaiDark: #0B2B20;
+  --color-mentawaiSage: #3D7A5A;
+  --color-mentawaiMint: #59C394;
+  --color-mentawaiGold: #E5A93C;
+  --color-mentawaiBone: #FAF8F5;
 }
 
 :root {

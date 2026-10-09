@@ -1,17 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { GlobalProvider, useGlobal } from './GlobalContext';
 import { supabase } from './supabaseClient';
 
+// Komponen Global & Layout (Tetap di-import normal agar langsung siap)
+import TopBar from './components/TopBar';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import FloatingWhatsApp from './components/FloatingWhatsApp'; 
 import Home from './pages/Home';
-import Detail from './pages/Detail';
-import Booking from './pages/Booking';
-import Login from './pages/Login';
-import Admin from './pages/Admin';
-import Reviews from './pages/Reviews';
+
+
+// Lazy Loading Halaman Sekunder (Hanya diunduh saat dikunjungi)
+const Detail = lazy(() => import('./pages/Detail'));
+const Booking = lazy(() => import('./pages/Booking'));
+const Login = lazy(() => import('./pages/Login'));
+const Admin = lazy(() => import('./pages/Admin'));
+const Reviews = lazy(() => import('./pages/Reviews'));
+const GaleriPage = lazy(() => import('./pages/GalleryPage'));
+const KatalogPage = lazy(() => import('./pages/KatalogPage')); // Pastikan ini ada jika pakai Katalog baru
+const AboutPage = lazy(() => import('./pages/AboutPage'));
 
 // ================= KOMPONEN PROTEKSI RUTE ADMIN (REAL-TIME) =================
 const ProtectedRoute = ({ children }) => {
@@ -19,13 +27,11 @@ const ProtectedRoute = ({ children }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Cek sesi login saat ini
         supabase.auth.getSession().then(({ data: { session } }) => {
             setSession(session);
             setLoading(false);
         });
 
-        // Mendengarkan perubahan state auth (login/logout secara real-time)
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
             setSession(session);
             setLoading(false);
@@ -42,9 +48,7 @@ const ProtectedRoute = ({ children }) => {
         );
     }
     
-    // Jika tidak ada sesi, langsung tendang ke login
     if (!session) return <Navigate to="/login" replace />;
-    
     return children;
 };
 
@@ -69,15 +73,21 @@ const LayoutWrapper = ({ children }) => {
 
     return (
         <>
-            <div className="bg-[#0A1610] text-white/80 py-2.5 px-6 text-center text-xs tracking-wider font-semibold border-b border-white/10">
-                <span className="text-[#a8c69f]">EXCLUSIVE OFFER:</span> Experience the Life of the Authentic Mentawai Tribe & Legendary Waves
-            </div>
+            <TopBar />
             <Navbar />
             <main className="flex-grow">{children}</main>
             <Footer />
         </>
     );
 };
+
+// ================= KOMPONEN LOADING FALLBACK =================
+const PageLoader = () => (
+    <div className="min-h-screen flex flex-col items-center justify-center bg-[#FAF8F5] text-[#0A1610]">
+        <i className="fa-solid fa-compass fa-spin text-4xl mb-3 text-mentawaiMint"></i>
+        <p className="font-bold text-xs uppercase tracking-widest animate-pulse">Memuat halaman...</p>
+    </div>
+);
 
 function App() {
     return (
@@ -86,20 +96,25 @@ function App() {
                 <div className="bg-[#FAF8F5] text-gray-800 font-sans antialiased overflow-x-hidden min-h-screen flex flex-col relative">
                     <GlobalToast />
                     <LayoutWrapper>
-                        <Routes>
-                            <Route path="/" element={<Home />} />
-                            <Route path="/detail" element={<Detail />} />
-                            <Route path="/booking" element={<Booking />} />
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/reviews" element={<Reviews />} />
-                            
-                            {/* Rute Admin Dibungkus Gembok Keamanan */}
-                            <Route path="/admin/*" element={
-                                <ProtectedRoute>
-                                    <Admin />
-                                </ProtectedRoute>
-                            } />
-                        </Routes>
+                        {/* Suspense membungkus rute yang di-lazy load */}
+                        <Suspense fallback={<PageLoader />}>
+                            <Routes>
+                                <Route path="/" element={<Home />} />
+                                <Route path="/detail" element={<Detail />} />
+                                <Route path="/booking" element={<Booking />} />
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/reviews" element={<Reviews />} />
+                                <Route path="/GaleriPage" element={<GaleriPage />} />
+                                <Route path="/katalog" element={<KatalogPage />} />
+                                <Route path="/about" element={<AboutPage />} /> 
+                                {/* Rute Admin Dibungkus Gembok Keamanan */}
+                                <Route path="/admin/*" element={
+                                    <ProtectedRoute>
+                                        <Admin />
+                                    </ProtectedRoute>
+                                } />
+                            </Routes>
+                        </Suspense>
                     </LayoutWrapper>
 
                     {/* Widget WhatsApp Melayang Global */}

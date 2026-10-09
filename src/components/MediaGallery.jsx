@@ -33,10 +33,10 @@ const MediaGallery = ({ mediaData }) => {
                     <p className="text-white/60 max-w-2xl mx-auto text-sm md:text-base">Take a closer look at the actual journey. Click the tabs below to see original photos or cinematic video footage of our adventures.</p>
 
                     <div className="flex justify-center mt-10 gap-3">
-                        <button onClick={() => setActiveTab('photos')} className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 flex items-center gap-2 ${activeTab === 'photos' ? 'bg-mentawaiMint text-mentawaiDark shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}>
+                        <button onClick={() => setActiveTab('photos')} className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 flex items-center gap-2 cursor-pointer ${activeTab === 'photos' ? 'bg-mentawaiMint text-mentawaiDark shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}>
                             <i className="fa-solid fa-images text-sm"></i> Activity Photos ({photos.length})
                         </button>
-                        <button onClick={() => setActiveTab('videos')} className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 flex items-center gap-2 ${activeTab === 'videos' ? 'bg-mentawaiMint text-mentawaiDark shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}>
+                        <button onClick={() => setActiveTab('videos')} className={`px-6 py-3 rounded-full text-xs font-bold uppercase tracking-widest transition duration-300 flex items-center gap-2 cursor-pointer ${activeTab === 'videos' ? 'bg-mentawaiMint text-mentawaiDark shadow-lg' : 'bg-white/10 text-white hover:bg-white/20'}`}>
                             <i className="fa-solid fa-circle-play text-sm"></i> Cinematic Video ({videos.length})
                         </button>
                     </div>
@@ -50,7 +50,12 @@ const MediaGallery = ({ mediaData }) => {
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                                 {photos.map((photo) => (
                                     <div key={photo.id} className="group relative aspect-[4/3] rounded-2xl overflow-hidden shadow-md cursor-zoom-in border border-white/10" onClick={() => handleOpenPhoto(photo.url_media, photo.deskripsi)}>
-                                        <img src={photo.url_media} alt={photo.judul} className="w-full h-full object-cover transition duration-500 group-hover:scale-110" />
+                                        <img 
+                                            src={photo.url_media} 
+                                            alt={photo.judul} 
+                                            loading="lazy" 
+                                            className="w-full h-full object-cover transition duration-500 group-hover:scale-110" 
+                                        />
                                         <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent opacity-0 group-hover:opacity-100 transition duration-300 flex items-end p-4">
                                             <div>
                                                 <h4 className="font-bold text-sm text-white">{photo.judul}</h4>
@@ -67,15 +72,24 @@ const MediaGallery = ({ mediaData }) => {
                 {activeTab === 'videos' && (
                     <div className="animate-fade-in">
                         {videos.length === 0 ? (
-                            <p className="text-center text-white/50 py-10">No documentation photos have been uploaded yet.</p>
+                            <p className="text-center text-white/50 py-10">No documentation videos have been uploaded yet.</p>
                         ) : (
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                                 {videos.map((video) => (
                                     <div key={video.id} className="bg-mentawaiDark/40 border border-white/10 rounded-3xl p-4 flex flex-col justify-between">
+                                        {/* OPTIMASI: Menggunakan preload="none" agar video tidak membebani memori di awal */}
                                         <div className="relative rounded-2xl overflow-hidden aspect-video bg-black flex items-center justify-center group">
-                                            {/* Pakai tag video untuk jadi thumbnail bg yang nge-loop, atau gambar biasa */}
-                                            <video src={video.url_media} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:scale-105 transition duration-700" muted loop playsInline></video>
-                                            <div className="relative z-10 w-20 h-20 bg-mentawaiMint text-mentawaiDark rounded-full flex items-center justify-center text-3xl cursor-pointer group-hover:bg-white group-hover:scale-110 transition duration-300 shadow-xl" onClick={() => handleOpenVideo(video.url_media, video.judul, video.deskripsi)}>
+                                            <video 
+                                                src={video.url_media} 
+                                                preload="none"
+                                                className="absolute inset-0 w-full h-full object-cover opacity-60" 
+                                                muted 
+                                                playsInline
+                                            ></video>
+                                            <div 
+                                                className="relative z-10 w-20 h-20 bg-mentawaiMint text-mentawaiDark rounded-full flex items-center justify-center text-3xl cursor-pointer group-hover:bg-white group-hover:scale-110 transition duration-300 shadow-xl" 
+                                                onClick={() => handleOpenVideo(video.url_media, video.judul, video.deskripsi)}
+                                            >
                                                 <i className="fa-solid fa-play ml-1"></i>
                                             </div>
                                         </div>
@@ -95,7 +109,7 @@ const MediaGallery = ({ mediaData }) => {
             {/* LIGHTBOX MODAL */}
             {lightbox.isOpen && (
                 <div className="fixed inset-0 bg-black/95 z-[100] flex items-center justify-center p-6 transition-all duration-300">
-                    <button onClick={closeLightbox} className="absolute top-6 right-6 text-white text-3xl hover:text-mentawaiMint transition z-50">
+                    <button onClick={closeLightbox} className="absolute top-6 right-6 text-white text-3xl hover:text-mentawaiMint transition z-50 cursor-pointer">
                         <i className="fa-solid fa-xmark"></i>
                     </button>
                     <div className="max-w-4xl w-full text-center flex flex-col justify-center items-center relative">
