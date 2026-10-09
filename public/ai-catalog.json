@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "Mentawai Roots Tour Catalog",
+  "description": "Daftar paket ekspedisi budaya dan trekking hutan Mentawai.",
+  "type": "catalog",
+  "items": [
+    {
+      "id": "expedition-cultural",
+      "name": "Cultural Exploration",
+      "url": "https://mentawairoots.com/katalog",
+      "description": "Paket wisata tinggal bersama suku Mentawai asli di Uma Sikerei."
+    },
+    {
+      "id": "expedition-jungle",
+      "name": "Siberut Jungle Trekking",
+      "url": "https://mentawairoots.com/katalog",
+      "description": "Petualangan menyusuri hutan dalam Siberut dengan pemandu lokal."
+    }
+  ]
+}
