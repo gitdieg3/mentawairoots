@@ -74,8 +74,8 @@ const HeroMentawaiRoots = () => {
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}
                                 className={`pb-3 text-sm whitespace-nowrap transition-all duration-300 relative ${activeTab === tab
-                                        ? 'text-[#1C3A27] font-bold'
-                                        : 'text-slate-400 font-medium hover:text-slate-600'
+                                    ? 'text-[#1C3A27] font-bold'
+                                    : 'text-slate-400 font-medium hover:text-slate-600'
                                     }`}
                             >
                                 {tab}
@@ -98,6 +98,7 @@ const HeroMentawaiRoots = () => {
                             <select
                                 value={duration}
                                 onChange={(e) => setDuration(e.target.value)}
+                                aria-label="Program Duration"
                                 className="w-full bg-transparent text-sm font-bold text-slate-900 focus:outline-none appearance-none cursor-pointer"
                             >
                                 <option value="All Durations">All Durations</option>
@@ -116,6 +117,7 @@ const HeroMentawaiRoots = () => {
                             <select
                                 value={experience}
                                 onChange={(e) => setExperience(e.target.value)}
+                                aria-label="Experience Type"
                                 className="w-full bg-transparent text-sm font-bold text-slate-900 focus:outline-none appearance-none cursor-pointer"
                             >
                                 <option value="All Activities">All Activities</option>

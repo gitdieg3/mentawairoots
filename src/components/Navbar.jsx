@@ -27,13 +27,14 @@ const Navbar = () => {
                 <a href="/" className="flex items-center gap-2.5 text-2xl font-black tracking-tight text-mentawaiDark">
                     <span className="font-serif italic font-bold">{settings.brand_name ? settings.brand_name.replace('Mentawai ', '') : 'roots'}</span>
                     <span className="text-mentawaiSage font-sans font-light tracking-widest text-lg border-l border-mentawaiDark/20 pl-2">
-            
+
                     </span>
                 </a>
 
                 {/* Hamburger Button (Mobile) */}
                 <button
                     onClick={() => setIsOpen(!isOpen)}
+                    aria-label="Menu"
                     className="md:hidden text-mentawaiDark focus:outline-none text-2xl"
                 >
                     <i className={`fa-solid ${isOpen ? 'fa-xmark' : 'fa-bars'}`}></i>
