@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../supabaseClient';
 import { useGlobal } from '../GlobalContext';
+import { Helmet } from 'react-helmet-async';
 import { useNavigate } from 'react-router-dom';
 
 const KatalogPage = () => {
@@ -16,6 +17,7 @@ const KatalogPage = () => {
     const [priceFilter, setPriceFilter] = useState('ALL');
 
     useEffect(() => {
+  
         const fetchData = async () => {
             try {
                 const [pkgRes, catRes] = await Promise.all([
@@ -55,6 +57,7 @@ const KatalogPage = () => {
     }, [packages, searchTerm, selectedCategory, priceFilter]);
 
     return (
+        
         <main className="bg-[#FAF8F5] min-h-screen pt-28 pb-20 px-4 sm:px-6 lg:px-8 font-sans text-slate-800">
             <div className="max-w-7xl mx-auto">
                 

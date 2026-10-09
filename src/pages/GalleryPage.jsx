@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { supabase } from '../supabaseClient';
+import { Helmet } from 'react-helmet-async';
 
 const GalleryPage = () => {
     const [mediaData, setMediaData] = useState([]);

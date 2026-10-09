@@ -26,7 +26,7 @@ const Footer = () => {
                     <div className="flex items-center gap-4 text-slate-400 text-lg">
                         <a href={settings?.facebook || '#'} aria-label="Facebook" target="_blank" rel="noopener noreferrer" className="hover:text-mentawaiSage transition"><i className="fa-brands fa-facebook-f"></i></a>
                         <a href={settings?.instagram || '#'} aria-label="Instagram" target="_blank" rel="noopener noreferrer" className="hover:text-mentawaiSage transition"><i className="fa-brands fa-instagram"></i></a>
-                        <a href="#" aria-label="TripAdvisor" target="_blank" rel="noopener noreferrer" className="hover:text-mentawaiSage transition"><i className="fa-brands fa-tripadvisor"></i>tripadvisor</a>
+                        <a href="https://www.tripadvisor.co.id/Attraction_Review-g297726-d26613911-Reviews-Mentawai_Tribe-Padang_West_Sumatra_Sumatra.html" aria-label="TripAdvisor" target="_blank" rel="noopener noreferrer" className="hover:text-mentawaiSage transition"><i className="fa-brands fa-tripadvisor"></i>tripadvisor</a>
                         <a href={`https://wa.me/${contactPhone.replace(/\D/g, '')}`} aria-label="WhatsApp" target="_blank" rel="noopener noreferrer" className="hover:text-mentawaiSage transition"><i className="fa-brands fa-whatsapp"></i></a>
                     </div>
                 </div>

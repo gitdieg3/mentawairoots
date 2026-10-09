@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
+import { Helmet } from 'react-helmet-async';
 
 
 const Reviews = () => {

@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate } from 'react-router-dom';
 import { GlobalProvider, useGlobal } from './GlobalContext';
 import { supabase } from './supabaseClient';
+import { HelmetProvider } from 'react-helmet-async';
 
 // Komponen Global & Layout (Tetap di-import normal agar langsung siap)
 import TopBar from './components/TopBar';
